@@ -1,23 +1,28 @@
 # ===========================
-# Python Backend
+# Python
 # ===========================
+
+# Virtual environments
+.venv/
+venv/
+env/
 
 backend/.venv/
 backend/venv/
-backend/Lib/
-backend/Scripts/
-backend/Include/
 
-backend/__pycache__/
+# Python cache
+__pycache__/
 **/__pycache__/
-
 *.py[cod]
 *.pyo
 *.pyd
 
-# Environment
-backend/.env
+# Environment files
 .env
+.env.*
+backend/.env
+frontend/.env
+frontend/.env.*
 
 # ===========================
 # Frontend
@@ -26,9 +31,6 @@ backend/.env
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
-
-frontend/.env
-frontend/.env.local
 
 # ===========================
 # IDE
