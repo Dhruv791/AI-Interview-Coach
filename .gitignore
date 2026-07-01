@@ -2,7 +2,7 @@
 # Python
 # ===========================
 
-# Virtual environments
+# Virtual Environments
 .venv/
 venv/
 env/
@@ -14,10 +14,8 @@ backend/venv/
 __pycache__/
 **/__pycache__/
 *.py[cod]
-*.pyo
-*.pyd
 
-# Environment files
+# Environment variables
 .env
 .env.*
 backend/.env
