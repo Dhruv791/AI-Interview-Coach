@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getInterview, Interview } from '../api/interviews'
 import {
   Award,
@@ -10,7 +10,8 @@ import {
   ChevronUp,
   BookOpen,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Cpu
 } from 'lucide-react'
 
 export default function InterviewFeedbackPage() {
@@ -20,6 +21,13 @@ export default function InterviewFeedbackPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null)
+  const getScoreBg = (score: number) => {
+  if (score >= 80) return "bg-green-100";
+  if (score >= 60) return "bg-yellow-100";
+  return "bg-red-100";
+};
+
+const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -41,6 +49,7 @@ export default function InterviewFeedbackPage() {
       setIsLoading(false)
     }
   }
+
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-emerald-450 border-emerald-500/20'

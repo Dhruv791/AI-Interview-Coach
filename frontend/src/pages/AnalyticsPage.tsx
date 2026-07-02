@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis,
-  CartesianGrid, Tooltip, ResponsiveContainer
+  CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Cell
 } from 'recharts'
-import {
+import {Brain, Activity, Percent, Target,
   TrendingUp, TrendingDown, Award,
   BarChart3, CheckCircle2, AlertCircle,
   FileText, Loader2, Sparkles, ChevronDown, ChevronUp

@@ -1,3 +1,5 @@
+import {Variants } from "framer-motion";
+
 import React, { useState, useEffect, useRef } from 'react'
 import {
   Upload, FileText, AlertCircle,
