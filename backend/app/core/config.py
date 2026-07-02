@@ -12,13 +12,11 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str = ""
     
     # CORS setup for React Vite development
-    BACKEND_CORS_ORIGINS = [
+    BACKEND_CORS_ORIGINS: list[str] = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
     "https://ai-interview-coach-dhruvvv.vercel.app",
-    "https://ai-interview-coach-git-main-dhruvvv.vercel.app",
-    "https://ai-interview-coach-9eildssx7-dhruvvv.vercel.app",
 ]
 
     model_config = SettingsConfigDict(
