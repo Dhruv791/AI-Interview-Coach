@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import {
-  Upload, FileText, AlertCircle, CheckCircle2,
+  Upload, FileText, AlertCircle,
   Trash2, Award, BookOpen, Sparkles, Loader2, Search, ArrowUpDown
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -8,11 +8,29 @@ import { uploadResume, listResumes, deleteResume, Resume } from '../api/resumes'
 import { toast } from 'sonner'
 import clsx from 'clsx'
 
-const tabVariants = {
-  initial: { opacity: 0, x: 5 },
-  animate: { opacity: 1, x: 0, transition: { duration: 0.18, ease: 'easeOut' } },
-  exit:    { opacity: 0, x: -5, transition: { duration: 0.12, ease: 'easeIn' } },
-}
+
+const tabVariants: Variants = {
+  initial: {
+    opacity: 0,
+    x: 5,
+  },
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.18,
+      ease: "easeOut",
+    },
+  },
+  exit: {
+    opacity: 0,
+    x: -5,
+    transition: {
+      duration: 0.12,
+      ease: "easeIn",
+    },
+  },
+};
 
 export default function ResumePage() {
   const [resumes, setResumes] = useState<Resume[]>([])

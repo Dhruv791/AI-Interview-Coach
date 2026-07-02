@@ -13,8 +13,7 @@ import {
   Loader2,
   Cpu,
   ArrowRight,
-  Sparkles,
-  Award
+  Sparkles
 } from 'lucide-react'
 
 export default function InterviewSessionPage() {

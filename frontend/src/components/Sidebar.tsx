@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Mic2, FileText, BarChart3,
   Settings, LogOut, ChevronLeft, ChevronRight,
-  Sparkles, Menu, X
+  Sparkles, X
 } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import clsx from 'clsx'

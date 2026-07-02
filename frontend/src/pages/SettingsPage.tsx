@@ -17,7 +17,7 @@ const SECTIONS = [
 ]
 
 export default function SettingsPage() {
-  const { user, logout } = useAuthStore()
+  const { user } = useAuthStore()
   const { theme, setTheme } = useTheme()
 
   const [profileForm, setProfileForm] = useState({

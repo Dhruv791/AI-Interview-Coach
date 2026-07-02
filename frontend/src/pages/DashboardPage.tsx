@@ -75,7 +75,6 @@ export default function DashboardPage() {
 
   // Last in-progress interview
   const lastInProgress = interviews.find((i) => !i.completed_at)
-  const lastCompleted = completedInterviews[0]
 
   const features = [
     {

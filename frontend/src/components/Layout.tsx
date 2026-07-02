@@ -1,16 +1,33 @@
 import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion,Variants,  AnimatePresence } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 import clsx from 'clsx'
 
-const pageVariants = {
-  initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } },
-  exit:    { opacity: 0, y: -4, transition: { duration: 0.15, ease: 'easeIn' } },
-}
+const pageVariants: Variants = {
+  initial: {
+    opacity: 0,
+    y: 8,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.22,
+      ease: "easeOut",
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -4,
+    transition: {
+      duration: 0.15,
+      ease: "easeIn",
+    },
+  },
+};
 
 export default function Layout() {
   const [collapsed, setCollapsed] = useState(false)
