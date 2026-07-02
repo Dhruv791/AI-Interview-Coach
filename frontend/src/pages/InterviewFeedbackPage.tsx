@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { getInterview, Interview } from '../api/interviews'
 import {
   Award,
@@ -8,7 +8,6 @@ import {
   ArrowLeft,
   ChevronDown,
   ChevronUp,
-  Cpu,
   BookOpen,
   CheckCircle2,
   Sparkles
@@ -16,7 +15,6 @@ import {
 
 export default function InterviewFeedbackPage() {
   const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
 
   const [interview, setInterview] = useState<Interview | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -48,12 +46,6 @@ export default function InterviewFeedbackPage() {
     if (score >= 80) return 'text-emerald-450 border-emerald-500/20'
     if (score >= 60) return 'text-yellow-450 border-yellow-500/20'
     return 'text-red-455 border-red-500/20'
-  }
-
-  const getScoreBg = (score: number) => {
-    if (score >= 80) return 'bg-emerald-500/10'
-    if (score >= 60) return 'bg-yellow-500/10'
-    return 'bg-red-500/10'
   }
 
   if (isLoading) {

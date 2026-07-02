@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Brain, Play, Cpu, AlertCircle, Clock, HelpCircle } from 'lucide-react'
+import { Brain, Play, Cpu, Clock, HelpCircle } from 'lucide-react'
 import { startInterview } from '../api/interviews'
 import { toast } from 'sonner'
 import clsx from 'clsx'

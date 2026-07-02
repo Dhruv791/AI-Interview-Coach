@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis,
-  CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine
+  CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts'
 import {
-  TrendingUp, TrendingDown, Award, Target,
-  BarChart3, CheckCircle2, AlertCircle, Brain,
-  FileText, Loader2, Sparkles, Activity, Percent, ChevronDown, ChevronUp
+  TrendingUp, TrendingDown, Award,
+  BarChart3, CheckCircle2, AlertCircle,
+  FileText, Loader2, Sparkles, ChevronDown, ChevronUp
 } from 'lucide-react'
 import { getAnalyticsSummary, AnalyticsSummary } from '../api/analytics'
 import clsx from 'clsx'
