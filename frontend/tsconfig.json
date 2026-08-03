@@ -9,6 +9,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "types": ["node"],
     "jsx": "react-jsx",
     "strict": true,
     "noUnusedLocals": false,
