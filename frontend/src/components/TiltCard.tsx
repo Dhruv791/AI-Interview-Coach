@@ -78,13 +78,25 @@ export function TiltCard({
       }
     : {}
 
+  // Omit conflicting drag/animation keys from react attributes
+  const {
+    onDrag, onDragStart, onDragEnd,
+    onAnimationStart,
+    style, ...safeProps
+  } = props
+
+  const combinedStyle = {
+    ...cardStyle,
+    ...style
+  }
+
   return (
     <motion.div
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={cardStyle}
+      style={combinedStyle}
       className={clsx(
         'relative bg-slate-900 border rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer',
         isSelected 
@@ -93,7 +105,7 @@ export function TiltCard({
         isHovered && 'shadow-glow-primary -translate-y-1',
         className
       )}
-      {...props}
+      {...safeProps}
     >
       {/* Light spotlight shine overlay */}
       {shouldAnimate && isHovered && (
