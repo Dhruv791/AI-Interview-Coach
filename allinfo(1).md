@@ -189,7 +189,7 @@ This document provides a comprehensive overview of the entire InterviewAI codeba
 - **`interview_service.py`**: Orchestrates the interview workflow on top of `gemini.py`. Handles bulk question creation from a single generation response, per-question response submission logic with duplicate-answer prevention, and final score computation (arithmetic mean of all per-question scores).
 - **`analytics_service.py`**: Contains the `AnalyticsService` class. All aggregation runs directly in PostgreSQL using SQLAlchemy's `func.avg()`, `func.count()`, `func.max()`, `func.min()`, and `GROUP BY` — not in Python. Computes and returns: **KPIs** (`avg_score`, `best_score`, `completion_rate`, `improvement_pct`, `best_category`, `weakest_category`, `total_resumes`, `avg_ats_score`), **score trend** (ordered list of session scores for the line chart), **category breakdown** (avg/best score and count per category for the bar chart), and **insight arrays** (aggregated recurring strength and weakness keywords from all stored evaluations).
 
-## To Start 
+## To Start
 
 Activate the venv : venv\Scripts\activate
 Start the backend :  uvicorn app.main:app --reload --port 8000

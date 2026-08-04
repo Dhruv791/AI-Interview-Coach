@@ -15,6 +15,8 @@ import {
   ArrowRight,
   Sparkles
 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Magnetic } from '../components/Magnetic'
 
 export default function InterviewSessionPage() {
   const { id } = useParams<{ id: string }>()
@@ -109,11 +111,13 @@ export default function InterviewSessionPage() {
     }
   }
 
+  const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white gap-4">
-        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
-        <p className="text-slate-400 text-sm">Resuming interview session...</p>
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        <p className="text-slate-400 text-xs tracking-wider uppercase font-mono">Resuming interview session...</p>
       </div>
     )
   }
@@ -122,8 +126,8 @@ export default function InterviewSessionPage() {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white p-6 text-center">
         <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
-        <h2 className="text-xl font-bold">Interview session not found.</h2>
-        <button onClick={() => navigate('/dashboard')} className="mt-4 bg-indigo-600 px-6 py-2.5 rounded-xl">
+        <h2 className="text-xl font-bold font-display">Session Not Found</h2>
+        <button onClick={() => navigate('/dashboard')} className="mt-4 bg-primary px-6 py-2.5 rounded-full font-bold shadow-lg shadow-primary/20">
           Return to Dashboard
         </button>
       </div>
@@ -131,54 +135,59 @@ export default function InterviewSessionPage() {
   }
 
   const currentQuestion = interview.questions[currentIdx]
-  const progressPercent = ((currentIdx) / interview.questions.length) * 100
+  const progressPercent = (currentIdx / interview.questions.length) * 100
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6 md:p-10 relative overflow-hidden flex items-center justify-center">
       {/* Background glow */}
-      <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-3xl relative z-10 space-y-6">
+      <motion.div 
+        className="w-full max-w-3xl relative z-10 space-y-6"
+        initial={{ opacity: 0, scale: isReduced ? 1 : 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      >
         {/* Nav Header */}
-        <div className="flex justify-between items-center bg-slate-900/60 border border-slate-800 rounded-2xl px-6 py-4 backdrop-blur-sm">
+        <div className="flex justify-between items-center bg-slate-900/40 border border-white/5 rounded-2xl px-6 py-4 backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-650/15 flex items-center justify-center text-indigo-400">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
               <Brain className="w-4 h-4" />
             </div>
             <div>
-              <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Mock Interview</span>
-              <p className="text-sm font-semibold">{interview.category} ({interview.difficulty})</p>
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider font-mono">Active Session</span>
+              <p className="text-xs font-bold text-slate-200 tracking-wide">{interview.category} ({interview.difficulty.toUpperCase()})</p>
             </div>
           </div>
-          <span className="text-sm font-bold text-slate-400">
-            Question {currentIdx + 1} of {interview.questions.length}
+          <span className="text-xs font-mono font-bold text-slate-400">
+            Q. {currentIdx + 1} / {interview.questions.length}
           </span>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-slate-900 border border-slate-800 rounded-full h-2.5 overflow-hidden">
+        <div className="w-full bg-slate-900/80 border border-white/5 rounded-full h-2 overflow-hidden">
           <div
-            className="bg-indigo-600 h-2.5 rounded-full transition-all duration-500"
+            className="bg-gradient-to-r from-primary to-cyan-400 h-full rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
 
         {/* Question Area */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl space-y-6">
+        <div className="bg-slate-900 border border-white/5 rounded-2xl p-8 shadow-2xl shadow-black/45 space-y-6 border-glow-primary">
           <div className="space-y-2">
-            <span className="text-xs text-indigo-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" /> Interviewer Prompt
+            <span className="text-xs text-primary font-bold uppercase tracking-wider flex items-center gap-1.5 font-mono">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> AI Interviewer Prompt
             </span>
-            <h2 className="text-xl font-bold leading-relaxed text-slate-100">
+            <h2 className="text-lg md:text-xl font-bold leading-relaxed text-slate-150">
               {currentQuestion?.question_text}
             </h2>
           </div>
 
           {/* Answer Form */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="space-y-1.5">
-              <label htmlFor="user-answer" className="block text-sm font-semibold text-slate-400">
-                Your Answer
+              <label htmlFor="user-answer" className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                Your Answer Explanation
               </label>
               <textarea
                 id="user-answer"
@@ -187,8 +196,8 @@ export default function InterviewSessionPage() {
                 disabled={isSubmitting}
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
-                placeholder="Type your explanation, conceptual outline, or code snippet here..."
-                className="w-full bg-slate-800 border border-slate-700 focus:border-indigo-500 rounded-xl p-4 text-slate-100 placeholder:text-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600/30 transition-all font-mono resize-y caret-slate-200 selection:bg-indigo-500/30"
+                placeholder="Type your outline, explanation logic, or code snippet here..."
+                className="w-full bg-slate-950/60 border border-white/5 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-xl p-4 text-slate-100 placeholder:text-slate-600 text-sm outline-none transition-all font-mono resize-y caret-slate-200"
               />
             </div>
 
@@ -199,26 +208,30 @@ export default function InterviewSessionPage() {
               </div>
             )}
 
-            <button
-              onClick={handleAnswerSubmit}
-              disabled={isSubmitting}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30"
-            >
-              {isSubmitting ? (
-                <>
-                  <Cpu className="w-5 h-5 animate-spin text-white" />
-                  Evaluating Response via AI...
-                </>
-              ) : (
-                <>
-                  Submit & Next Question
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
+            <div className="w-full flex justify-end">
+              <Magnetic>
+                <button
+                  onClick={handleAnswerSubmit}
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto bg-primary hover:bg-primary/95 disabled:bg-primary/50 disabled:cursor-not-allowed text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 border border-primary/20"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Cpu className="w-5 h-5 animate-spin text-white" />
+                      Evaluating response...
+                    </>
+                  ) : (
+                    <>
+                      Submit & Next
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </Magnetic>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

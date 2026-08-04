@@ -4,36 +4,37 @@
 
 @layer base {
   :root {
-    /* ── DARK THEME VARIABLES (Default) ────────────────────────────────────── */
-    --background: 2 6 23;         /* slate-950 */
+    /* ── DARK THEME VARIABLES (Default - Neo-Violet) ────────────────────────── */
+    --background: 10 11 16;         /* Deep void space black #0A0B10 */
     --foreground: 248 250 252;    /* slate-50 */
 
-    --card: 15 23 42;             /* slate-900 */
+    --card: 18 19 28;             /* slate-900 with slate-950 tone #12131C */
     --card-foreground: 248 250 252;
 
-    --popover: 15 23 42;
+    --popover: 18 19 28;
     --popover-foreground: 248 250 252;
 
-    --primary: 99 102 241;        /* indigo-500 */
+    --primary: 139 92 246;        /* Vivid Violet #8B5CF6 */
     --primary-foreground: 255 255 255;
 
-    --secondary: 30 41 59;        /* slate-800 */
-    --secondary-foreground: 226 232 240; /* slate-200 */
+    --secondary: 26 27 38;        /* Dark gray slate */
+    --secondary-foreground: 226 232 240;
 
-    --muted: 30 41 59;
-    --muted-foreground: 148 163 184;  /* slate-400 */
+    --muted: 26 27 38;
+    --muted-foreground: 148 163 184;
 
-    --accent: 30 41 59;
+    --accent: 26 27 38;
     --accent-foreground: 226 232 240;
+    --accent-glow: 6 182 212;     /* Cyber Cyan #06B6D4 */
 
     --destructive: 239 68 68;
     --destructive-foreground: 255 255 255;
 
-    --border: 30 41 59;           /* slate-800 */
-    --input: 30 41 59;
-    --ring: 99 102 241;
+    --border: 34 35 48;           /* Slightly lighter border */
+    --input: 34 35 48;
+    --ring: 139 92 246;
 
-    --radius: 0.5rem;
+    --radius: 1rem;               /* Enhanced card curvature */
 
     /* Slate palette aliases for dark theme */
     --white: 255 255 255;
@@ -47,40 +48,41 @@
     --slate-700: 51 65 85;
     --slate-800: 30 41 59;
     --slate-850: 21 31 50;
-    --slate-900: 15 23 42;
-    --slate-950: 2 6 23;
+    --slate-900: 18 19 28;
+    --slate-950: 10 11 16;
   }
 
   .light {
     /* ── LIGHT THEME VARIABLES ──────────────────────────────────────────────── */
     --background: 248 250 252;    /* slate-50 */
-    --foreground: 15 23 42;       /* slate-900 */
+    --foreground: 10 11 16;       /* slate-950 */
 
     --card: 255 255 255;          /* white */
-    --card-foreground: 15 23 42;
+    --card-foreground: 10 11 16;
 
     --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
+    --popover-foreground: 10 11 16;
 
-    --primary: 79 70 229;         /* indigo-600 */
+    --primary: 124 58 237;        /* Indigo-Purple #7C3AED */
     --primary-foreground: 255 255 255;
 
-    --secondary: 241 245 249;      /* slate-100 */
-    --secondary-foreground: 15 23 42;
+    --secondary: 241 245 249;
+    --secondary-foreground: 10 11 16;
 
     --muted: 241 245 249;
-    --muted-foreground: 100 116 139;  /* slate-500 */
+    --muted-foreground: 100 116 139;
 
     --accent: 241 245 249;
-    --accent-foreground: 15 23 42;
+    --accent-foreground: 10 11 16;
+    --accent-glow: 8 145 178;     /* Cyber Cyan Darker #0891B2 */
 
-    --border: 226 232 240;         /* slate-200 */
+    --border: 226 232 240;
     --input: 226 232 240;
-    --ring: 79 70 229;
+    --ring: 124 58 237;
 
     /* Slate palette aliases for light theme (Reversed colors) */
-    --white: 15 23 42;            /* text-white becomes slate-900 */
-    --slate-50: 15 23 42;
+    --white: 10 11 16;
+    --slate-50: 10 11 16;
     --slate-100: 30 41 59;
     --slate-200: 51 65 85;
     --slate-300: 71 85 105;
@@ -102,6 +104,10 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 /* Ensure form elements don't use browser default light styling */
 input,
 textarea,
@@ -111,10 +117,54 @@ select {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(2px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.15s ease-out forwards;
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── CUSTOM DESIGN SYSTEM CLASSES ────────────────────────────────────────── */
+
+/* Glassmorphism Panel cards */
+.glass-panel {
+  background: rgba(var(--card), 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.light .glass-panel {
+  background: rgba(var(--card), 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Gradient Borders */
+.border-glow-accent {
+  border: 1px solid transparent;
+  background-image: linear-gradient(rgb(var(--card)), rgb(var(--card))), 
+                    linear-gradient(135deg, rgb(var(--primary) / 0.5), rgb(var(--accent-glow) / 0.5));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.border-glow-primary {
+  border: 1px solid transparent;
+  background-image: linear-gradient(rgb(var(--card)), rgb(var(--card))), 
+                    linear-gradient(135deg, rgb(var(--primary) / 0.6), rgb(var(--primary) / 0.2));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* Monospace font accents */
+.mono-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Subtle glow filters */
+.glow-filter {
+  filter: drop-shadow(0 0 8px rgb(var(--primary) / 0.25));
 }

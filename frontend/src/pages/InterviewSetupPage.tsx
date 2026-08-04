@@ -4,11 +4,13 @@ import { Brain, Play, Cpu, Clock, HelpCircle, AlertCircle } from 'lucide-react'
 import { startInterview } from '../api/interviews'
 import { toast } from 'sonner'
 import clsx from 'clsx'
+import { motion } from 'framer-motion'
+import { Magnetic } from '../components/Magnetic'
 
 const DIFFICULTY_CONFIG = {
-  Easy:   { emoji: '🟢', color: 'text-emerald-400', ring: 'border-emerald-500', bg: 'bg-emerald-500/10', activeBg: 'bg-emerald-500 text-white shadow-emerald-500/30', duration: 8 },
-  Medium: { emoji: '🟡', color: 'text-yellow-400',  ring: 'border-yellow-500',  bg: 'bg-yellow-500/10',  activeBg: 'bg-yellow-500 text-white shadow-yellow-500/30',  duration: 12 },
-  Hard:   { emoji: '🔴', color: 'text-red-400',     ring: 'border-red-500',     bg: 'bg-red-500/10',    activeBg: 'bg-red-500 text-white shadow-red-500/30',        duration: 18 },
+  Easy:   { emoji: '🟢', color: 'text-emerald-450', activeBorder: 'border-emerald-500/50 shadow-[0_0_12px_rgba(52,211,153,0.15)] bg-emerald-500/5', bg: 'bg-emerald-500/5', duration: 8 },
+  Medium: { emoji: '🟡', color: 'text-yellow-450',  activeBorder: 'border-yellow-500/50 shadow-[0_0_12px_rgba(250,204,21,0.15)] bg-yellow-500/5',  bg: 'bg-yellow-500/5',  duration: 12 },
+  Hard:   { emoji: '🔴', color: 'text-red-450',     activeBorder: 'border-red-500/50 shadow-[0_0_12px_rgba(248,113,113,0.15)] bg-red-500/5',    bg: 'bg-red-500/5',    duration: 18 },
 } as const
 
 type Difficulty = keyof typeof DIFFICULTY_CONFIG
@@ -47,18 +49,27 @@ export default function InterviewSetupPage() {
     }
   }
 
+  // Check prefers-reduced-motion
+  const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   return (
     <div className="p-6 md:p-10 flex items-start justify-center min-h-[calc(100vh-56px)] relative overflow-hidden">
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-indigo-600/8 rounded-full blur-3xl pointer-events-none" />
+      {/* Background radial glow */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-xl relative z-10">
-        <div className="bg-slate-900 border border-white/8 rounded-2xl p-8 shadow-2xl shadow-black/30 space-y-6">
+      <motion.div 
+        className="w-full max-w-xl relative z-10"
+        initial={{ opacity: 0, y: isReduced ? 0 : 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="bg-slate-900 border border-white/5 rounded-2xl p-8 shadow-2xl shadow-black/40 space-y-6 relative border-glow-primary">
           {/* Header */}
           <div className="text-center">
-            <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-600/30">
+            <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/30">
               <Brain className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-white">Configure Interview</h1>
+            <h1 className="text-3xl font-extrabold tracking-tight text-white font-display">Configure Session</h1>
             <p className="text-slate-400 text-sm mt-1">Select your focus category and difficulty level</p>
           </div>
 
@@ -70,10 +81,10 @@ export default function InterviewSetupPage() {
           )}
 
           <form onSubmit={handleStart} className="space-y-6">
-            {/* Category */}
+            {/* Category selection */}
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-slate-300">Category</label>
-              <div className="grid grid-cols-1 gap-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">Category</label>
+              <div className="grid grid-cols-1 gap-2.5">
                 {CATEGORIES.map((cat) => {
                   const isSelected = category === cat.value
                   return (
@@ -81,23 +92,23 @@ export default function InterviewSetupPage() {
                       key={cat.value}
                       onClick={() => !isStarting && setCategory(cat.value)}
                       className={clsx(
-                        'p-4 rounded-xl border cursor-pointer transition-all duration-150 select-none',
+                        'p-4 rounded-xl border cursor-pointer transition-all duration-200 select-none relative',
                         isSelected
-                          ? 'bg-indigo-600/12 border-indigo-500/70 shadow-md shadow-indigo-600/10 scale-[1.01]'
-                          : 'bg-slate-800/50 border-slate-700/60 hover:border-slate-600 hover:bg-slate-800'
+                          ? 'bg-primary/10 border-primary/40 shadow-glow-primary/5'
+                          : 'bg-slate-950/40 border-white/5 hover:border-white/10 hover:bg-slate-850/50'
                       )}
                     >
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2.5">
                           <span className="text-base">{cat.icon}</span>
-                          <span className={clsx('font-semibold text-sm', isSelected ? 'text-indigo-300' : 'text-slate-200')}>
+                          <span className={clsx('font-bold text-sm tracking-wide', isSelected ? 'text-primary' : 'text-slate-200')}>
                             {cat.label}
                           </span>
                         </div>
                         <div className={clsx('w-4 h-4 rounded-full border flex items-center justify-center transition-all',
-                          isSelected ? 'border-indigo-500 bg-indigo-500/20' : 'border-slate-600'
+                          isSelected ? 'border-primary bg-primary/20' : 'border-slate-650'
                         )}>
-                          {isSelected && <div className="w-2 h-2 bg-indigo-400 rounded-full" />}
+                          {isSelected && <div className="w-2 h-2 bg-primary rounded-full" />}
                         </div>
                       </div>
                       <p className="text-slate-500 text-xs mt-1.5 leading-relaxed pl-8">{cat.desc}</p>
@@ -107,9 +118,9 @@ export default function InterviewSetupPage() {
               </div>
             </div>
 
-            {/* Difficulty */}
+            {/* Difficulty selection */}
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-slate-300">Difficulty</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">Difficulty</label>
               <div className="grid grid-cols-3 gap-3">
                 {(Object.keys(DIFFICULTY_CONFIG) as Difficulty[]).map((diff) => {
                   const cfg = DIFFICULTY_CONFIG[diff]
@@ -121,51 +132,56 @@ export default function InterviewSetupPage() {
                       disabled={isStarting}
                       onClick={() => setDifficulty(diff)}
                       className={clsx(
-                        'py-3 rounded-xl border text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-1.5',
+                        'py-3 rounded-xl border text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 font-mono',
                         isSelected
-                          ? `${cfg.activeBg} border-transparent shadow-lg`
-                          : `${cfg.bg} ${cfg.ring} border opacity-70 hover:opacity-100 ${cfg.color}`
+                          ? `${cfg.activeBorder} ${cfg.color} border`
+                          : 'bg-slate-950/40 border-white/5 text-slate-400 hover:text-slate-200 hover:bg-slate-900'
                       )}
                     >
-                      {cfg.emoji} {diff}
+                      <span>{cfg.emoji}</span>
+                      <span>{diff}</span>
                     </button>
                   )
                 })}
               </div>
             </div>
 
-            {/* Summary */}
-            <div className="flex items-center gap-4 bg-slate-800/60 border border-white/6 rounded-xl px-5 py-4">
-              <div className="flex items-center gap-2 text-slate-300 text-sm">
-                <HelpCircle className="w-4 h-4 text-indigo-400" />
-                <span><span className="font-bold text-white">{NUM_QUESTIONS}</span> Questions</span>
+            {/* Session Summary info panel */}
+            <div className="flex items-center gap-4 bg-slate-950/50 border border-white/5 rounded-xl px-5 py-4 font-mono text-xs">
+              <div className="flex items-center gap-2 text-slate-400">
+                <HelpCircle className="w-4 h-4 text-primary" />
+                <span><span className="font-bold text-white">{NUM_QUESTIONS}</span> QUESTIONS</span>
               </div>
-              <div className="w-px h-5 bg-slate-700" />
-              <div className="flex items-center gap-2 text-slate-300 text-sm">
-                <Clock className="w-4 h-4 text-indigo-400" />
-                <span>Est. <span className="font-bold text-white">~{diffCfg.duration} mins</span></span>
+              <div className="w-px h-5 bg-slate-800" />
+              <div className="flex items-center gap-2 text-slate-400">
+                <Clock className="w-4 h-4 text-primary" />
+                <span>EST. <span className="font-bold text-white">~{diffCfg.duration} MINS</span></span>
               </div>
-              <div className="w-px h-5 bg-slate-700" />
-              <div className={clsx('text-sm font-semibold', diffCfg.color)}>
-                {difficulty}
+              <div className="w-px h-5 bg-slate-800" />
+              <div className={clsx('font-bold', diffCfg.color)}>
+                {difficulty.toUpperCase()}
               </div>
             </div>
 
             {/* Start Button */}
-            <button
-              type="submit"
-              disabled={isStarting}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/40 hover:scale-[1.01] active:scale-100"
-            >
-              {isStarting ? (
-                <><Cpu className="w-5 h-5 animate-spin" /> Generating AI Questions...</>
-              ) : (
-                <><Play className="w-4 h-4 fill-white" /> Start Interview Session</>
-              )}
-            </button>
+            <div className="w-full">
+              <Magnetic>
+                <button
+                  type="submit"
+                  disabled={isStarting}
+                  className="w-full bg-primary hover:bg-primary/95 disabled:bg-primary/50 disabled:cursor-not-allowed text-white font-semibold py-3.5 px-6 rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/45 border border-primary/20"
+                >
+                  {isStarting ? (
+                    <><Cpu className="w-5 h-5 animate-spin" /> Generating AI Questions...</>
+                  ) : (
+                    <><Play className="w-4 h-4 fill-white" /> Start Mock Interview</>
+                  )}
+                </button>
+              </Magnetic>
+            </div>
           </form>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

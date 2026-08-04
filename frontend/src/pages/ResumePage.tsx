@@ -1,5 +1,3 @@
-import {Variants } from "framer-motion";
-
 import React, { useState, useEffect, useRef } from 'react'
 import {
   Upload, FileText, AlertCircle,
@@ -10,29 +8,11 @@ import { uploadResume, listResumes, deleteResume, Resume } from '../api/resumes'
 import { toast } from 'sonner'
 import clsx from 'clsx'
 
-
-const tabVariants: Variants = {
-  initial: {
-    opacity: 0,
-    x: 5,
-  },
-  animate: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.18,
-      ease: "easeOut",
-    },
-  },
-  exit: {
-    opacity: 0,
-    x: -5,
-    transition: {
-      duration: 0.12,
-      ease: "easeIn",
-    },
-  },
-};
+const tabVariants = {
+  initial: { opacity: 0, x: 5 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.2, ease: "easeOut" } },
+  exit: { opacity: 0, x: -5, transition: { duration: 0.12, ease: "easeIn" } },
+}
 
 export default function ResumePage() {
   const [resumes, setResumes] = useState<Resume[]>([])
@@ -146,16 +126,22 @@ export default function ResumePage() {
     }
   }
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-emerald-450 border-emerald-500/20'
-    if (score >= 60) return 'text-yellow-450 border-yellow-500/20'
-    return 'text-red-450 border-red-500/20'
+  const getScoreColorClass = (score: number) => {
+    if (score >= 80) return 'text-emerald-450 stroke-emerald-500'
+    if (score >= 60) return 'text-yellow-400 stroke-yellow-500'
+    return 'text-red-400 stroke-red-500'
+  }
+
+  const getScoreGlowStyle = (score: number) => {
+    if (score >= 80) return 'rgba(52, 211, 153, 0.25)'
+    if (score >= 60) return 'rgba(250, 204, 21, 0.25)'
+    return 'rgba(248, 113, 113, 0.25)'
   }
 
   const getScoreBgColor = (score: number) => {
-    if (score >= 80) return 'bg-emerald-500/10'
-    if (score >= 60) return 'bg-yellow-500/10'
-    return 'bg-red-500/10'
+    if (score >= 80) return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+    if (score >= 60) return 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+    return 'bg-red-500/10 text-red-400 border border-red-500/20'
   }
 
   // Filter & Sort list
@@ -167,15 +153,17 @@ export default function ResumePage() {
       return sortBy === 'newest' ? timeB - timeA : timeA - timeB
     })
 
+  const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   return (
     <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-8 relative overflow-hidden">
       {/* Background Glows */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-indigo-600/6 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-2">
-          Resume Analyzer <Sparkles className="w-6 h-6 text-indigo-400" />
+        <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2 font-display">
+          Resume Analyzer <Sparkles className="w-6 h-6 text-primary" />
         </h1>
         <p className="text-slate-400 text-sm mt-1">Check your ATS score and get insights on your resume</p>
       </div>
@@ -186,10 +174,10 @@ export default function ResumePage() {
           {/* Upload Area */}
           <div
             className={clsx(
-              'border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-200 cursor-pointer relative overflow-hidden hover:scale-[1.01] active:scale-100',
+              'border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-350 cursor-pointer relative overflow-hidden',
               dragActive
-                ? 'border-indigo-500 bg-indigo-600/8 shadow-lg shadow-indigo-600/10 scale-[1.02]'
-                : 'border-slate-800 bg-slate-900/50 hover:bg-slate-900 hover:border-slate-700'
+                ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgb(var(--primary)/0.15)] scale-[1.01] animate-pulse'
+                : 'border-white/5 bg-slate-900/60 hover:bg-slate-900 hover:border-white/10'
             )}
             onDragEnter={handleDrag}
             onDragOver={handleDrag}
@@ -208,21 +196,21 @@ export default function ResumePage() {
 
             {isUploading ? (
               <div className="py-6 space-y-4">
-                <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mx-auto" />
+                <Loader2 className="w-10 h-10 text-primary animate-spin mx-auto" />
                 <div>
-                  <p className="text-sm font-semibold text-slate-200">Analyzing your Resume...</p>
-                  <p className="text-xs text-slate-500 mt-1">This will take a few seconds</p>
+                  <p className="text-sm font-bold text-slate-200">Analyzing your Resume...</p>
+                  <p className="text-xs text-slate-500 mt-1 font-mono uppercase">processing ATS tags</p>
                 </div>
-                <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden max-w-[200px] mx-auto">
+                <div className="w-full bg-slate-950 border border-white/5 rounded-full h-1.5 overflow-hidden max-w-[200px] mx-auto">
                   <div
-                    className="bg-indigo-650 h-1.5 rounded-full transition-all duration-300"
+                    className="bg-primary h-full rounded-full transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
               </div>
             ) : (
               <div className="py-6 space-y-3">
-                <div className="w-12 h-12 bg-slate-800/80 rounded-xl flex items-center justify-center mx-auto text-indigo-400">
+                <div className="w-12 h-12 bg-slate-950/60 border border-white/5 rounded-xl flex items-center justify-center mx-auto text-primary group-hover:scale-105 transition-transform duration-300">
                   <Upload className="w-6 h-6" />
                 </div>
                 <div>
@@ -244,8 +232,8 @@ export default function ResumePage() {
           )}
 
           {/* Resume History */}
-          <div className="bg-slate-900/60 border border-white/8 rounded-2xl p-6 space-y-4">
-            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Previous Analysis</h2>
+          <div className="bg-slate-900 border border-white/5 rounded-2xl p-6 space-y-4">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-widest font-mono">Previous Analysis</h2>
 
             {/* Controls */}
             <div className="flex gap-2">
@@ -256,21 +244,21 @@ export default function ResumePage() {
                   placeholder="Search file name..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700/60 rounded-xl pl-9 pr-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-950/60 border border-white/5 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-xl pl-9 pr-3 py-2 text-slate-200 text-xs outline-none transition-all"
                 />
               </div>
               <button
                 onClick={() => setSortBy((s) => (s === 'newest' ? 'oldest' : 'newest'))}
                 title="Sort order"
-                className="p-2 bg-slate-850 hover:bg-slate-800 border border-slate-700/60 rounded-xl text-slate-400 hover:text-slate-200 transition"
+                className="p-2 bg-slate-950/60 hover:bg-slate-850 border border-white/5 rounded-xl text-slate-400 hover:text-slate-200 transition"
               >
                 <ArrowUpDown className="w-4 h-4" />
               </button>
             </div>
 
             {filteredResumes.length === 0 ? (
-              <div className="text-center py-6 text-slate-650 text-xs">
-                {searchQuery ? 'No matching resumes found.' : 'No resumes uploaded yet.'}
+              <div className="text-center py-6 text-slate-600 text-xs font-mono">
+                {searchQuery ? 'NO MATCHES FOUND.' : 'NO ANALYSIS HISTORY.'}
               </div>
             ) : (
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
@@ -281,19 +269,19 @@ export default function ResumePage() {
                       key={resume.id}
                       onClick={() => setSelectedResume(resume)}
                       className={clsx(
-                        'flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all duration-150',
+                        'flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all duration-200',
                         isSelected
-                          ? 'bg-slate-800/80 border-slate-700'
-                          : 'bg-slate-900 border-white/5 hover:border-slate-700 hover:bg-slate-850'
+                          ? 'bg-slate-800/60 border-primary/30 shadow-[0_0_10px_rgb(var(--primary)/0.05)]'
+                          : 'bg-slate-950/20 border-white/5 hover:border-white/10 hover:bg-slate-950/40'
                       )}
                     >
                       <div className="flex items-center gap-3 overflow-hidden">
-                        <FileText className="w-5 h-5 text-indigo-400 shrink-0" />
-                        <div className="truncate text-sm">
-                          <p className={clsx('font-medium truncate text-xs', isSelected ? 'text-indigo-300' : 'text-slate-300')}>
+                        <FileText className="w-4 h-4 text-primary shrink-0" />
+                        <div className="truncate">
+                          <p className={clsx('font-semibold truncate text-xs transition-colors', isSelected ? 'text-white' : 'text-slate-300')}>
                             {resume.file_name}
                           </p>
-                          <p className="text-slate-550 mt-0.5" style={{ fontSize: '10px' }}>
+                          <p className="text-slate-500 mt-0.5 font-mono text-[9px]">
                             {new Date(resume.uploaded_at).toLocaleDateString()}
                           </p>
                         </div>
@@ -301,9 +289,8 @@ export default function ResumePage() {
                       <div className="flex items-center gap-2 shrink-0">
                         {resume.analysis && (
                           <span className={clsx(
-                            'text-[10px] font-bold px-2 py-0.5 rounded-full',
-                            getScoreBgColor(resume.analysis.ats_score),
-                            getScoreColor(resume.analysis.ats_score).split(' ')[0]
+                            'text-[9px] font-bold px-2 py-0.5 rounded-full font-mono',
+                            getScoreBgColor(resume.analysis.ats_score)
                           )}>
                             {resume.analysis.ats_score}%
                           </span>
@@ -326,37 +313,69 @@ export default function ResumePage() {
         {/* Right panel: Details Analysis */}
         <div className="lg:col-span-2">
           {selectedResume ? (
-            <div className="bg-slate-900 border border-white/8 rounded-2xl p-6 md:p-8 space-y-8 shadow-xl shadow-black/20">
+            <div className="bg-slate-900 border border-white/5 rounded-2xl p-6 md:p-8 space-y-8 shadow-xl shadow-black/30 relative border-glow-primary overflow-hidden">
               {/* File Header Details */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-800/60 pb-6 gap-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/5 pb-6 gap-4">
                 <div>
-                  <h2 className="text-lg font-bold text-white tracking-tight">{selectedResume.file_name}</h2>
-                  <p className="text-slate-500 text-xs mt-1">
-                    Uploaded on {new Date(selectedResume.uploaded_at).toLocaleString()}
+                  <h2 className="text-xl font-extrabold text-white tracking-tight font-display">{selectedResume.file_name}</h2>
+                  <p className="text-slate-500 text-xs mt-1 font-mono uppercase tracking-wider">
+                    Uploaded: {new Date(selectedResume.uploaded_at).toLocaleString()}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
                   {selectedResume.analysis && (
-                    <div className="flex items-center gap-3 bg-slate-950/40 border border-white/6 px-4 py-2.5 rounded-2xl">
-                      {/* Enlarged Circle Gauge */}
-                      <div className={clsx(
-                        'w-16 h-16 rounded-full border-4 flex flex-col items-center justify-center font-black text-xl shadow-inner',
-                        getScoreColor(selectedResume.analysis.ats_score).split(' ')[0],
-                        selectedResume.analysis.ats_score >= 80 ? 'border-emerald-500/40 bg-emerald-500/5' :
-                        selectedResume.analysis.ats_score >= 60 ? 'border-yellow-500/40 bg-yellow-500/5' :
-                        'border-red-500/40 bg-red-500/5'
-                      )}>
-                        {selectedResume.analysis.ats_score}
-                      </div>
+                    <div className="flex items-center gap-4 bg-slate-950/60 border border-white/5 px-4.5 py-3.5 rounded-2xl relative shadow-md">
+                      {/* SVG Circular score gauge */}
+                      {(() => {
+                        const score = selectedResume.analysis.ats_score
+                        const radius = 28
+                        const circ = 2 * Math.PI * radius
+                        const offset = circ - (score / 100) * circ
+                        const colorClass = getScoreColorClass(score)
+                        const glowStyle = getScoreGlowStyle(score)
+
+                        return (
+                          <div className="relative w-16 h-16 flex items-center justify-center">
+                            <svg className="w-16 h-16 -rotate-90">
+                              <circle
+                                cx="32"
+                                cy="32"
+                                r={radius}
+                                className="stroke-slate-800"
+                                strokeWidth="4.5"
+                                fill="transparent"
+                              />
+                              <circle
+                                cx="32"
+                                cy="32"
+                                r={radius}
+                                className={colorClass.split(' ')[1]}
+                                strokeWidth="4.5"
+                                fill="transparent"
+                                strokeDasharray={circ}
+                                strokeDashoffset={offset}
+                                strokeLinecap="round"
+                                style={{
+                                  filter: `drop-shadow(0 0 4px ${glowStyle})`
+                                }}
+                              />
+                            </svg>
+                            <span className={clsx('absolute text-sm font-black font-mono', colorClass.split(' ')[0])}>
+                              {score}
+                            </span>
+                          </div>
+                        )
+                      })()}
+
                       <div>
-                        <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">ATS SCORE</p>
+                        <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider font-mono">ATS INDEX</p>
                         <p className={clsx(
-                          'text-xs font-black',
-                          getScoreColor(selectedResume.analysis.ats_score).split(' ')[0]
+                          'text-xs font-bold tracking-wide mt-0.5',
+                          getScoreColorClass(selectedResume.analysis.ats_score).split(' ')[0]
                         )}>
-                          {selectedResume.analysis.ats_score >= 80 ? 'Excellent · Top 10% · ATS Ready' :
-                           selectedResume.analysis.ats_score >= 60 ? 'Good Potential · Match' :
-                           'Needs Revision'}
+                          {selectedResume.analysis.ats_score >= 80 ? 'ATS Optimization Complete' :
+                           selectedResume.analysis.ats_score >= 60 ? 'Candidate Score Profile Match' :
+                           'Needs Keyword Revision'}
                         </p>
                       </div>
                     </div>
@@ -366,22 +385,29 @@ export default function ResumePage() {
 
               {selectedResume.analysis ? (
                 <div className="space-y-6">
-                  {/* Navigation Tabs */}
-                  <div className="flex border-b border-slate-800/60 gap-1">
-                    {(['strengths', 'weaknesses', 'recommendations'] as const).map((tab) => (
-                      <button
-                        key={tab}
-                        onClick={() => setActiveTab(tab)}
-                        className={clsx(
-                          'px-4 py-2.5 text-sm font-medium border-b-2 capitalize transition-colors',
-                          activeTab === tab
-                            ? 'text-indigo-400 border-indigo-600'
-                            : 'text-slate-400 border-transparent hover:text-slate-200'
-                        )}
-                      >
-                        {tab}
-                      </button>
-                    ))}
+                  {/* Navigation Tabs Pill selector */}
+                  <div className="flex bg-slate-950/60 p-1 border border-white/5 rounded-full w-max gap-1">
+                    {(['strengths', 'weaknesses', 'recommendations'] as const).map((tab) => {
+                      const isActive = activeTab === tab
+                      return (
+                        <button
+                          key={tab}
+                          onClick={() => setActiveTab(tab)}
+                          className="relative px-5 py-2 text-[10px] font-bold uppercase tracking-wider rounded-full transition-colors font-mono"
+                        >
+                          <span className={clsx('relative z-10 transition-colors duration-200', isActive ? 'text-white' : 'text-slate-500 hover:text-slate-350')}>
+                            {tab}
+                          </span>
+                          {isActive && (
+                            <motion.div
+                              layoutId="activeTabPill"
+                              className="absolute inset-0 bg-primary/20 border border-primary/25 rounded-full"
+                              transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                            />
+                          )}
+                        </button>
+                      )
+                    })}
                   </div>
 
                   {/* Tab Contents with Framer Motion Animation */}
@@ -397,11 +423,11 @@ export default function ResumePage() {
                       >
                         {activeTab === 'strengths' && (
                           <>
-                            <p className="text-xs text-slate-450 mb-2">Key assets identified on your resume:</p>
+                            <p className="text-xs text-slate-500 uppercase font-bold tracking-wider font-mono">Key strengths identified on your resume:</p>
                             {selectedResume.analysis.strengths.map((str, idx) => (
-                              <div key={idx} className="flex gap-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-4">
-                                <Award className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                                <p className="text-slate-250 text-sm leading-relaxed">{str}</p>
+                              <div key={idx} className="flex gap-3.5 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-4.5">
+                                <Award className="w-5 h-5 text-emerald-450 shrink-0 mt-0.5" />
+                                <p className="text-slate-300 text-xs leading-relaxed">{str}</p>
                               </div>
                             ))}
                           </>
@@ -409,11 +435,11 @@ export default function ResumePage() {
 
                         {activeTab === 'weaknesses' && (
                           <>
-                            <p className="text-xs text-slate-450 mb-2">Gaps or areas holding your resume back:</p>
+                            <p className="text-xs text-slate-500 uppercase font-bold tracking-wider font-mono">Gaps or areas holding your resume back:</p>
                             {selectedResume.analysis.weaknesses.map((weak, idx) => (
-                              <div key={idx} className="flex gap-3 bg-red-500/5 border border-red-500/10 rounded-xl p-4">
+                              <div key={idx} className="flex gap-3.5 bg-red-500/5 border border-red-500/10 rounded-xl p-4.5">
                                 <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                                <p className="text-slate-255 text-sm leading-relaxed">{weak}</p>
+                                <p className="text-slate-300 text-xs leading-relaxed">{weak}</p>
                               </div>
                             ))}
                           </>
@@ -421,11 +447,11 @@ export default function ResumePage() {
 
                         {activeTab === 'recommendations' && (
                           <>
-                            <p className="text-xs text-slate-450 mb-2">Step-by-step actions to optimize ATS rating:</p>
+                            <p className="text-xs text-slate-500 uppercase font-bold tracking-wider font-mono">Actions to optimize ATS rating:</p>
                             {selectedResume.analysis.recommendations.map((rec, idx) => (
-                              <div key={idx} className="flex gap-3 bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4">
-                                <BookOpen className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
-                                <p className="text-slate-255 text-sm leading-relaxed">{rec}</p>
+                              <div key={idx} className="flex gap-3.5 bg-primary/5 border border-primary/10 rounded-xl p-4.5">
+                                <BookOpen className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                                <p className="text-slate-300 text-xs leading-relaxed">{rec}</p>
                               </div>
                             ))}
                           </>
@@ -435,16 +461,16 @@ export default function ResumePage() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-12 text-slate-500">
+                <div className="text-center py-12 text-slate-500 font-mono text-xs uppercase tracking-wider">
                   No analysis report generated.
                 </div>
               )}
             </div>
           ) : (
-            <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
-              <FileText className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-              <h3 className="font-semibold text-lg text-slate-350">Select a Resume</h3>
-              <p className="text-sm text-slate-550 mt-1">Or upload a new resume on the left to start the analysis.</p>
+            <div className="bg-slate-900 border border-white/5 rounded-2xl p-12 text-center text-slate-400 flex flex-col items-center justify-center min-h-[300px]">
+              <FileText className="w-12 h-12 text-slate-750 mb-4" />
+              <h3 className="font-bold text-lg text-slate-300 font-display">Select a Resume File</h3>
+              <p className="text-xs text-slate-500 mt-1">Or upload a new resume on the left to start parsing.</p>
             </div>
           )}
         </div>

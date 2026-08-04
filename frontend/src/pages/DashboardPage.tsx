@@ -8,6 +8,9 @@ import { useAuthStore } from '../store/authStore'
 import { listInterviews, Interview } from '../api/interviews'
 import { listResumes } from '../api/resumes'
 import clsx from 'clsx'
+import { motion } from 'framer-motion'
+import { Magnetic } from '../components/Magnetic'
+import { TiltCard } from '../components/TiltCard'
 
 function getGreeting() {
   const h = new Date().getHours()
@@ -16,12 +19,12 @@ function getGreeting() {
   return 'Good Evening'
 }
 
-// Skeleton card
+// Skeleton card matching the new rounded aesthetics
 function SkeletonCard() {
   return (
-    <div className="bg-slate-900 border border-white/8 rounded-xl p-5 animate-pulse">
-      <div className="h-7 w-16 bg-slate-800 rounded mb-2" />
-      <div className="h-3 w-32 bg-slate-800/70 rounded" />
+    <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 animate-pulse">
+      <div className="h-7 w-16 bg-slate-800 rounded-lg mb-2" />
+      <div className="h-3 w-32 bg-slate-800/70 rounded-md" />
     </div>
   )
 }
@@ -32,10 +35,10 @@ function TrendBadge({ value }: TrendBadgeProps) {
   const positive = value > 0
   return (
     <span className={clsx(
-      'flex items-center gap-0.5 text-xs font-semibold mt-1',
-      positive ? 'text-emerald-400' : 'text-red-400'
+      'flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider mt-1 px-1.5 py-0.5 rounded-full inline-flex font-mono w-max',
+      positive ? 'text-emerald-400 bg-emerald-500/10' : 'text-red-400 bg-red-500/10'
     )}>
-      {positive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+      {positive ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
       {positive ? '+' : ''}{value}% this week
     </span>
   )
@@ -73,61 +76,86 @@ export default function DashboardPage() {
       ? Math.round(completedInterviews.reduce((acc, c) => acc + (c.overall_score || 0), 0) / totalInterviewsCount)
       : 0
 
-  // Last in-progress interview
   const lastInProgress = interviews.find((i) => !i.completed_at)
 
   const features = [
     {
-      icon: <Brain className="w-6 h-6 text-indigo-400" />,
+      icon: <Brain className="w-5 h-5 text-primary" />,
       title: 'AI Mock Interviews',
-      description: 'Practice with AI-generated questions tailored to your role.',
-      badge: 'Active', badgeClass: 'bg-indigo-500/10 text-indigo-400',
+      description: 'Practice with adaptive, AI-generated questions designed for your tech stack.',
+      badge: 'Active', badgeClass: 'bg-primary/10 text-primary border border-primary/20',
       link: '/interviews/setup',
+      glow: 'rgba(139, 92, 246, 0.25)'
     },
     {
-      icon: <FileText className="w-6 h-6 text-violet-400" />,
+      icon: <FileText className="w-5 h-5 text-cyan-400" />,
       title: 'Resume Analysis',
-      description: 'Get ATS score and actionable feedback on your resume.',
-      badge: 'Active', badgeClass: 'bg-violet-500/10 text-violet-400',
+      description: 'Verify ATS scanner alignment and receive real-time impact suggestions.',
+      badge: 'Active', badgeClass: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
       link: '/resume',
+      glow: 'rgba(6, 182, 212, 0.25)'
     },
     {
-      icon: <BarChart3 className="w-6 h-6 text-emerald-400" />,
+      icon: <BarChart3 className="w-5 h-5 text-emerald-400" />,
       title: 'Performance Analytics',
-      description: 'Track your progress and identify areas for improvement.',
-      badge: 'Active', badgeClass: 'bg-emerald-500/10 text-emerald-400',
+      description: 'Analyze competency charts, historical trends, and progress points.',
+      badge: 'Active', badgeClass: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
       link: '/analytics',
+      glow: 'rgba(52, 211, 153, 0.25)'
     },
   ]
+
+  // Kinetic greeting text configuration
+  const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const greetingText = `${getGreeting()}, ${firstName} 👋`
+  const greetingWords = greetingText.split(' ')
 
   return (
     <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-10 relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-48 bg-indigo-600/8 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Welcome section */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 relative z-10">
         <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-            {getGreeting()}, <span className="text-indigo-400">{firstName}</span> 👋
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight font-display flex flex-wrap gap-x-2">
+            {greetingWords.map((word, idx) => (
+              <motion.span
+                key={idx}
+                initial={{ opacity: 0, y: isReduced ? 0 : 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.4,
+                  delay: idx * 0.05,
+                  ease: [0.16, 1, 0.3, 1]
+                }}
+              >
+                {word.includes(firstName) ? <span className="text-primary">{word}</span> : word}
+              </motion.span>
+            ))}
           </h1>
           <p className="text-slate-400 text-sm mt-1">Ready for today's interview practice?</p>
         </div>
-        <div className="flex gap-2 flex-wrap">
+
+        <div className="flex gap-3 flex-wrap">
           {lastInProgress && (
-            <Link
-              to={`/interviews/${lastInProgress.id}`}
-              className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-white/8 hover:border-indigo-500/30 text-slate-200 text-sm font-semibold px-4 py-2.5 rounded-xl transition-all hover:scale-[1.02] active:scale-100"
-            >
-              <ChevronRight className="w-4 h-4 text-indigo-400" /> Continue Interview
-            </Link>
+            <Magnetic>
+              <Link
+                to={`/interviews/${lastInProgress.id}`}
+                className="flex items-center gap-2 bg-slate-900 hover:bg-slate-850 border border-white/5 hover:border-primary/30 text-slate-200 text-sm font-semibold px-5 py-2.5 rounded-full transition-all"
+              >
+                <ChevronRight className="w-4 h-4 text-primary" /> Continue Interview
+              </Link>
+            </Magnetic>
           )}
-          <Link
-            to="/interviews/setup"
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-indigo-600/25 hover:scale-[1.02] active:scale-100"
-          >
-            <Plus className="w-4 h-4" /> Start Interview
-          </Link>
+          <Magnetic>
+            <Link
+              to="/interviews/setup"
+              className="flex items-center gap-2 bg-primary hover:bg-primary/95 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-all shadow-lg shadow-primary/20 border border-primary/20"
+            >
+              <Plus className="w-4 h-4" /> Start Interview
+            </Link>
+          </Magnetic>
         </div>
       </div>
 
@@ -137,23 +165,25 @@ export default function DashboardPage() {
           Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
         ) : (
           <>
-            <div className="bg-slate-900 border border-white/8 rounded-xl p-5 hover:border-indigo-500/20 transition-all">
-              <p className="text-2xl font-black tracking-tight text-indigo-400">{totalInterviewsCount}</p>
-              <p className="text-slate-500 text-xs mt-1 uppercase font-bold tracking-wider">Interviews Completed</p>
+            <TiltCard className="p-5" glowColor="rgba(6, 182, 212, 0.2)">
+              <p className="text-3xl font-bold font-mono tracking-tight text-cyan-400">{totalInterviewsCount}</p>
+              <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider mt-1">Interviews Completed</p>
               <TrendBadge value={totalInterviewsCount > 0 ? 8 : 0} />
-            </div>
-            <div className="bg-slate-900 border border-white/8 rounded-xl p-5 hover:border-emerald-500/20 transition-all">
-              <p className="text-2xl font-black tracking-tight text-emerald-400">
+            </TiltCard>
+
+            <TiltCard className="p-5" glowColor="rgba(52, 211, 153, 0.2)">
+              <p className="text-3xl font-bold font-mono tracking-tight text-emerald-400">
                 {totalInterviewsCount > 0 ? `${averageScore}%` : '—'}
               </p>
-              <p className="text-slate-500 text-xs mt-1 uppercase font-bold tracking-wider">Avg. Interview Score</p>
+              <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider mt-1">Avg. Interview Score</p>
               {totalInterviewsCount > 0 && <TrendBadge value={5} />}
-            </div>
-            <div className="bg-slate-900 border border-white/8 rounded-xl p-5 hover:border-violet-500/20 transition-all">
-              <p className="text-2xl font-black tracking-tight text-violet-400">{resumeCount}</p>
-              <p className="text-slate-500 text-xs mt-1 uppercase font-bold tracking-wider">Resumes Analyzed</p>
+            </TiltCard>
+
+            <TiltCard className="p-5" glowColor="rgba(139, 92, 246, 0.2)">
+              <p className="text-3xl font-bold font-mono tracking-tight text-primary">{resumeCount}</p>
+              <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider mt-1">Resumes Analyzed</p>
               <TrendBadge value={resumeCount > 0 ? 2 : 0} />
-            </div>
+            </TiltCard>
           </>
         )}
       </div>
@@ -161,35 +191,25 @@ export default function DashboardPage() {
       {/* Quick Actions */}
       <div className="space-y-3 relative z-10">
         <div className="flex items-center gap-2">
-          <Zap className="w-4 h-4 text-yellow-400" />
-          <h2 className="text-sm font-bold text-slate-300 uppercase tracking-wider">Quick Actions</h2>
+          <Zap className="w-4 h-4 text-cyan-400" />
+          <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Quick Actions</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { label: 'Start Interview',   desc: 'Begin a mock session',       link: '/interviews/setup', color: 'indigo' },
-            { label: 'Upload Resume',     desc: 'Analyze ATS compatibility',  link: '/resume',           color: 'violet' },
-            { label: 'View Analytics',    desc: 'Check your progress',        link: '/analytics',        color: 'emerald' },
-          ].map(({ label, desc, link, color }) => (
-            <Link
-              key={label}
-              to={link}
-              className={clsx(
-                'flex items-center justify-between p-4 bg-slate-900 border border-white/8 rounded-xl group transition-all hover:scale-[1.01] active:scale-100',
-                color === 'indigo'  && 'hover:border-indigo-500/30 hover:bg-indigo-600/5',
-                color === 'violet'  && 'hover:border-violet-500/30 hover:bg-violet-600/5',
-                color === 'emerald' && 'hover:border-emerald-500/30 hover:bg-emerald-600/5',
-              )}
-            >
-              <div>
-                <p className="text-sm font-semibold text-slate-200">{label}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{desc}</p>
-              </div>
-              <ChevronRight className={clsx(
-                'w-4 h-4 transition-transform group-hover:translate-x-0.5',
-                color === 'indigo'  && 'text-indigo-400',
-                color === 'violet'  && 'text-violet-400',
-                color === 'emerald' && 'text-emerald-400',
-              )} />
+            { label: 'Start Interview',   desc: 'Begin a mock session',       link: '/interviews/setup', glow: 'rgba(139, 92, 246, 0.2)', color: 'text-primary' },
+            { label: 'Upload Resume',     desc: 'Analyze ATS compatibility',  link: '/resume',           glow: 'rgba(6, 182, 212, 0.2)',  color: 'text-cyan-400' },
+            { label: 'View Analytics',    desc: 'Check your progress',        link: '/analytics',        glow: 'rgba(52, 211, 153, 0.2)', color: 'text-emerald-400' },
+          ].map((act) => (
+            <Link key={act.label} to={act.link} className="block group">
+              <TiltCard className="p-4 border-white/5 hover:border-white/10" glowColor={act.glow}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">{act.label}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{act.desc}</p>
+                  </div>
+                  <ChevronRight className={clsx('w-4 h-4 transition-transform group-hover:translate-x-1', act.color)} />
+                </div>
+              </TiltCard>
             </Link>
           ))}
         </div>
@@ -197,41 +217,41 @@ export default function DashboardPage() {
 
       {/* Feature grid */}
       <div className="space-y-4 relative z-10">
-        <h2 className="text-lg font-bold text-white">Platform Features</h2>
+        <h2 className="text-xl font-extrabold text-white font-display">Platform Tools</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {features.map((feature) => (
-            <div
-              key={feature.title}
-              onClick={() => navigate(feature.link)}
-              className="bg-slate-900 border border-white/8 rounded-2xl p-6 cursor-pointer group transition-all hover:border-indigo-500/30 hover:shadow-lg hover:shadow-indigo-600/5 hover:scale-[1.01] active:scale-100"
-            >
-              <div className="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
-                {feature.icon}
-              </div>
-              <h3 className="text-white font-bold mb-1">{feature.title}</h3>
-              <p className="text-slate-400 text-xs leading-relaxed mb-4">{feature.description}</p>
-              <span className={clsx('inline-block text-xs rounded-full px-2.5 py-1 font-semibold', feature.badgeClass)}>
-                {feature.badge}
-              </span>
+            <div key={feature.title} onClick={() => navigate(feature.link)} className="block group cursor-pointer">
+              <TiltCard className="p-6 h-full flex flex-col justify-between border-white/5" glowColor={feature.glow}>
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-slate-950/60 border border-white/5 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-white font-bold mb-1.5 text-base">{feature.title}</h3>
+                  <p className="text-slate-450 text-xs leading-relaxed mb-5">{feature.description}</p>
+                </div>
+                <span className={clsx('inline-block text-[10px] uppercase tracking-wider rounded-full px-3 py-1 font-bold w-max', feature.badgeClass)}>
+                  {feature.badge}
+                </span>
+              </TiltCard>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Interview History */}
+      {/* Recent Sessions */}
       <div className="space-y-4 relative z-10">
-        <h2 className="text-lg font-bold text-white">Recent Sessions</h2>
+        <h2 className="text-xl font-extrabold text-white font-display">Recent Sessions</h2>
         {isLoading ? (
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-16 bg-slate-900 border border-white/8 rounded-xl animate-pulse" />
+              <div key={i} className="h-16 bg-slate-900/60 border border-white/5 rounded-2xl animate-pulse" />
             ))}
           </div>
         ) : interviews.length === 0 ? (
-          <div className="bg-slate-900 border border-white/8 rounded-2xl p-10 text-center">
+          <div className="bg-slate-900 border border-white/5 rounded-2xl p-10 text-center">
             <Brain className="w-10 h-10 text-slate-700 mx-auto mb-3" />
             <p className="text-slate-400 text-sm font-medium">No interview sessions yet</p>
-            <p className="text-slate-600 text-xs mt-1">Start your first mock interview above</p>
+            <p className="text-slate-650 text-xs mt-1">Configure and start your first mock interview above</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3">
@@ -245,19 +265,19 @@ export default function DashboardPage() {
                       ? navigate(`/interviews/${session.id}/feedback`)
                       : navigate(`/interviews/${session.id}`)
                   }
-                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-slate-900 border border-white/8 hover:border-indigo-500/30 rounded-xl cursor-pointer transition-all gap-4 group hover:scale-[1.005]"
+                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-slate-900 border border-white/5 hover:border-primary/20 rounded-2xl cursor-pointer transition-all duration-300 gap-4 group shadow-sm hover:scale-[1.005]"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600/10 transition-colors">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 bg-slate-950/60 border border-white/5 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary/10 transition-colors">
                       <Brain className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-sm text-slate-200">{session.category} Mock Interview</h4>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs text-slate-500 font-semibold">{session.difficulty}</span>
-                        <span className="text-slate-700">•</span>
+                      <h4 className="font-bold text-sm text-slate-200 group-hover:text-white transition-colors">{session.category} Interview</h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] uppercase font-mono tracking-wider text-slate-500 font-semibold">{session.difficulty}</span>
+                        <span className="text-slate-700 text-xs">•</span>
                         <span className="text-xs text-slate-500 flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
+                          <Calendar className="w-3 h-3 text-slate-600" />
                           {new Date(session.created_at).toLocaleDateString()}
                         </span>
                       </div>
@@ -265,12 +285,12 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     {isCompleted ? (
-                      <div className="flex items-center gap-1 bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full text-xs font-bold">
-                        <Award className="w-3.5 h-3.5" /> Score: {session.overall_score}%
+                      <div className="flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-mono font-bold">
+                        <Award className="w-3.5 h-3.5" /> {session.overall_score}%
                       </div>
                     ) : (
-                      <span className="text-xs bg-yellow-500/10 text-yellow-400 px-2.5 py-1 rounded-full font-bold">
-                        In Progress
+                      <span className="text-xs bg-yellow-500/10 text-yellow-450 border border-yellow-500/20 px-3 py-1 rounded-full font-mono font-bold">
+                        IN PROGRESS
                       </span>
                     )}
                     <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 transition-colors" />

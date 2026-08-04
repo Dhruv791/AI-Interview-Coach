@@ -56,6 +56,18 @@ export default {
           foreground: "rgb(var(--card-foreground) / <alpha-value>)",
         },
       },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        display: ["'Space Grotesk'", "sans-serif"],
+        mono: ["'JetBrains Mono'", "monospace"],
+      },
+      boxShadow: {
+        'glow-primary': '0 0 15px rgb(var(--primary) / 0.15)',
+        'glow-primary-lg': '0 0 25px rgb(var(--primary) / 0.25)',
+        'glow-accent': '0 0 15px rgb(var(--accent-glow) / 0.25)',
+        'glow-accent-lg': '0 0 30px rgb(var(--accent-glow) / 0.35)',
+        'glow-success': '0 0 15px rgba(52, 211, 153, 0.2)',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
