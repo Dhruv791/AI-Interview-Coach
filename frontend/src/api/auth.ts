@@ -10,6 +10,9 @@ export interface UserProfile {
   email: string
   full_name: string | null
   avatar_url: string | null
+  is_guest: boolean
+  interviews_remaining?: number | null
+  resumes_remaining?: number | null
   created_at: string
 }
 
@@ -33,6 +36,16 @@ export async function loginUser(email: string, password: string): Promise<TokenR
   const { data } = await apiClient.post<TokenResponse>('/auth/login', formData, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   })
+  return data
+}
+
+export async function loginAsGuest(): Promise<TokenResponse> {
+  const { data } = await apiClient.post<TokenResponse>('/auth/guest')
+  return data
+}
+
+export async function convertGuestAccount(payload: RegisterPayload): Promise<TokenResponse> {
+  const { data } = await apiClient.post<TokenResponse>('/auth/convert-guest', payload)
   return data
 }
 

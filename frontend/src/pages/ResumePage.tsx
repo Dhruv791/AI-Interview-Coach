@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Upload, FileText, AlertCircle,
   Trash2, Award, BookOpen, Sparkles, Loader2, Search, ArrowUpDown
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { uploadResume, listResumes, deleteResume, Resume } from '../api/resumes'
+import { useAuthStore } from '../store/authStore'
 import { toast } from 'sonner'
 import clsx from 'clsx'
 
@@ -15,6 +17,7 @@ const tabVariants = {
 }
 
 export default function ResumePage() {
+  const { user } = useAuthStore()
   const [resumes, setResumes] = useState<Resume[]>([])
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null)
   const [isUploading, setIsUploading] = useState(false)
@@ -23,6 +26,9 @@ export default function ResumePage() {
   const [dragActive, setDragActive] = useState(false)
   const [activeTab, setActiveTab] = useState<'strengths' | 'weaknesses' | 'recommendations'>('strengths')
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const isGuest = Boolean(user?.is_guest)
+  const isGuestResumeLimitReached = isGuest && user?.resumes_remaining === 0
 
   // Search & Sort states
   const [searchQuery, setSearchQuery] = useState('')
@@ -71,6 +77,12 @@ export default function ResumePage() {
   }
 
   const handleFile = async (file: File) => {
+    if (isGuestResumeLimitReached) {
+      setError('Guest limit reached (2/2 resume analyses). Please create an account!')
+      toast.error('Guest limit reached. Sign up for unlimited ATS scans!')
+      return
+    }
+
     if (file.type !== 'application/pdf') {
       setError('Please upload a PDF file only.')
       toast.error('Only PDF documents are supported')
@@ -171,6 +183,32 @@ export default function ResumePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left panel: Upload & History */}
         <div className="space-y-6 lg:col-span-1">
+          {/* Guest Limit Warning Banner */}
+          {isGuestResumeLimitReached ? (
+            <div className="flex flex-col items-start gap-2 bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 text-amber-300 text-xs">
+              <div className="flex items-start gap-2">
+                <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold">Guest limit reached (2/2 resumes analyzed)</p>
+                  <p className="text-slate-300 mt-0.5">Create a free account to unlock unlimited ATS analyses & history.</p>
+                </div>
+              </div>
+              <Link
+                to="/register"
+                className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold uppercase text-[10px] tracking-wider px-3.5 py-1.5 rounded-full mt-1 shadow-sm"
+              >
+                Sign Up
+              </Link>
+            </div>
+          ) : isGuest ? (
+            <div className="flex items-center gap-2 bg-slate-900 border border-amber-500/20 rounded-xl p-3 text-xs text-slate-300">
+              <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>
+                Guest Mode: <strong className="text-amber-300">{user?.resumes_remaining ?? 2}</strong> resume scans remaining.
+              </span>
+            </div>
+          ) : null}
+
           {/* Upload Area */}
           <div
             className={clsx(

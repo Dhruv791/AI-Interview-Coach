@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getMe, UserProfile } from '../api/auth'
+import { getMe, loginAsGuest, convertGuestAccount, UserProfile, RegisterPayload } from '../api/auth'
 
 interface AuthState {
   user: UserProfile | null
@@ -8,6 +8,8 @@ interface AuthState {
   // Actions
   setAuth: (token: string, user: UserProfile) => void
   updateUser: (user: UserProfile) => void
+  loginGuest: () => Promise<void>
+  convertGuest: (payload: RegisterPayload) => Promise<void>
   logout: () => void
   hydrate: () => Promise<void>
 }
@@ -24,7 +26,7 @@ function getStoredUser(): UserProfile | null {
 const initialToken = localStorage.getItem('auth_token')
 const initialUser = getStoredUser()
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: initialUser,
   token: initialToken,
   // If we already have token and cached user, render optimistically (isLoading: false)
@@ -40,6 +42,28 @@ export const useAuthStore = create<AuthState>((set) => ({
   updateUser: (user) => {
     localStorage.setItem('auth_user', JSON.stringify(user))
     set({ user })
+  },
+
+  loginGuest: async () => {
+    // If a valid guest session is already active in store, reuse it instead of creating a duplicate
+    const current = get()
+    if (current.token && current.user?.is_guest) {
+      return
+    }
+
+    const { access_token } = await loginAsGuest()
+    localStorage.setItem('auth_token', access_token)
+    const user = await getMe()
+    localStorage.setItem('auth_user', JSON.stringify(user))
+    set({ token: access_token, user, isLoading: false })
+  },
+
+  convertGuest: async (payload: RegisterPayload) => {
+    const { access_token } = await convertGuestAccount(payload)
+    localStorage.setItem('auth_token', access_token)
+    const user = await getMe()
+    localStorage.setItem('auth_user', JSON.stringify(user))
+    set({ token: access_token, user, isLoading: false })
   },
 
   logout: () => {

@@ -1,41 +1,52 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Brain, Play, Cpu, Clock, HelpCircle, AlertCircle } from 'lucide-react'
+import { useNavigate, Link } from 'react-router-dom'
+import { Brain, Play, Cpu, Clock, HelpCircle, AlertCircle, Sparkles } from 'lucide-react'
 import { startInterview } from '../api/interviews'
+import { useAuthStore } from '../store/authStore'
 import { toast } from 'sonner'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import { Magnetic } from '../components/Magnetic'
 
 const DIFFICULTY_CONFIG = {
-  Easy:   { emoji: '🟢', color: 'text-emerald-450', activeBorder: 'border-emerald-500/50 shadow-[0_0_12px_rgba(52,211,153,0.15)] bg-emerald-500/5', bg: 'bg-emerald-500/5', duration: 8 },
-  Medium: { emoji: '🟡', color: 'text-yellow-450',  activeBorder: 'border-yellow-500/50 shadow-[0_0_12px_rgba(250,204,21,0.15)] bg-yellow-500/5',  bg: 'bg-yellow-500/5',  duration: 12 },
-  Hard:   { emoji: '🔴', color: 'text-red-450',     activeBorder: 'border-red-500/50 shadow-[0_0_12px_rgba(248,113,113,0.15)] bg-red-500/5',    bg: 'bg-red-500/5',    duration: 18 },
+  Easy: { emoji: '🟢', color: 'text-emerald-450', activeBorder: 'border-emerald-500/50 shadow-[0_0_12px_rgba(52,211,153,0.15)] bg-emerald-500/5', bg: 'bg-emerald-500/5', duration: 8 },
+  Medium: { emoji: '🟡', color: 'text-yellow-450', activeBorder: 'border-yellow-500/50 shadow-[0_0_12px_rgba(250,204,21,0.15)] bg-yellow-500/5', bg: 'bg-yellow-500/5', duration: 12 },
+  Hard: { emoji: '🔴', color: 'text-red-450', activeBorder: 'border-red-500/50 shadow-[0_0_12px_rgba(248,113,113,0.15)] bg-red-500/5', bg: 'bg-red-500/5', duration: 18 },
 } as const
 
 type Difficulty = keyof typeof DIFFICULTY_CONFIG
 
 const CATEGORIES = [
-  { value: 'Backend',    label: 'Backend Engineering',           desc: 'System design, Databases, APIs, caching',                icon: '⚙️' },
-  { value: 'Frontend',   label: 'Frontend Engineering',          desc: 'React, browser performance, CSS layouts, JS logic',       icon: '🖥️' },
-  { value: 'Full Stack', label: 'Full Stack Development',        desc: 'End-to-end applications, integrations, deployment',       icon: '🚀' },
-  { value: 'DSA',        label: 'Data Structures & Algorithms',  desc: 'Problem solving, computational complexity, trees/graphs', icon: '🧩' },
-  { value: 'HR',         label: 'HR & Behavioral',               desc: 'Situation handling, collaboration, leadership questions', icon: '🤝' },
+  { value: 'Backend', label: 'Backend Engineering', desc: 'System design, Databases, APIs, caching', icon: '⚙️' },
+  { value: 'Frontend', label: 'Frontend Engineering', desc: 'React, browser performance, CSS layouts, JS logic', icon: '🖥️' },
+  { value: 'Full Stack', label: 'Full Stack Development', desc: 'End-to-end applications, integrations, deployment', icon: '🚀' },
+  { value: 'DSA', label: 'Data Structures & Algorithms', desc: 'Problem solving, computational complexity, trees/graphs', icon: '🧩' },
+  { value: 'HR', label: 'HR & Behavioral', desc: 'Situation handling, collaboration, leadership questions', icon: '🤝' },
 ]
 
 const NUM_QUESTIONS = 5
 
 export default function InterviewSetupPage() {
   const navigate = useNavigate()
+  const { user } = useAuthStore()
   const [category, setCategory] = useState('Backend')
   const [difficulty, setDifficulty] = useState<Difficulty>('Medium')
   const [isStarting, setIsStarting] = useState(false)
   const [error, setError] = useState('')
 
+  const isGuest = Boolean(user?.is_guest)
+  const isGuestLimitReached = isGuest && user?.interviews_remaining === 0
+
   const diffCfg = DIFFICULTY_CONFIG[difficulty]
 
   const handleStart = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (isGuestLimitReached) {
+      toast.error('Guest limit reached. Please sign up for a free account!')
+      navigate('/register')
+      return
+    }
+
     setError('')
     setIsStarting(true)
     try {
@@ -57,7 +68,7 @@ export default function InterviewSetupPage() {
       {/* Background radial glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      <motion.div 
+      <motion.div
         className="w-full max-w-xl relative z-10"
         initial={{ opacity: 0, y: isReduced ? 0 : 15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -72,6 +83,32 @@ export default function InterviewSetupPage() {
             <h1 className="text-3xl font-extrabold tracking-tight text-white font-display">Configure Session</h1>
             <p className="text-slate-400 text-sm mt-1">Select your focus category and difficulty level</p>
           </div>
+
+          {/* Guest Limit Warning Banner */}
+          {isGuestLimitReached ? (
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-amber-300 text-xs">
+              <div className="flex items-start gap-2.5">
+                <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold">Guest limit reached (2/2 interviews used)</p>
+                  <p className="text-slate-300 mt-0.5">Create a free account to unlock unlimited AI mock interviews.</p>
+                </div>
+              </div>
+              <Link
+                to="/register"
+                className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold uppercase text-[10px] tracking-wider px-3.5 py-1.5 rounded-full shrink-0 shadow-sm"
+              >
+                Sign Up
+              </Link>
+            </div>
+          ) : isGuest ? (
+            <div className="flex items-center gap-2 bg-slate-950/60 border border-amber-500/20 rounded-xl p-3 text-xs text-slate-300">
+              <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>
+                Guest Mode: <strong className="text-amber-300">{user?.interviews_remaining ?? 2}</strong> mock interviews remaining.
+              </span>
+            </div>
+          ) : null}
 
           {error && (
             <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm">
@@ -168,11 +205,13 @@ export default function InterviewSetupPage() {
               <Magnetic>
                 <button
                   type="submit"
-                  disabled={isStarting}
+                  disabled={isStarting || isGuestLimitReached}
                   className="w-full bg-primary hover:bg-primary/95 disabled:bg-primary/50 disabled:cursor-not-allowed text-white font-semibold py-3.5 px-6 rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/45 border border-primary/20"
                 >
                   {isStarting ? (
                     <><Cpu className="w-5 h-5 animate-spin" /> Generating AI Questions...</>
+                  ) : isGuestLimitReached ? (
+                    'Guest Limit Reached — Sign Up to Continue'
                   ) : (
                     <><Play className="w-4 h-4 fill-white" /> Start Mock Interview</>
                   )}

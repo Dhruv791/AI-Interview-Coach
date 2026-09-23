@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Sparkles, Mail, Lock, User, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react'
+import { Sparkles, Mail, Lock, User, Eye, EyeOff, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react'
 import { registerUser, getMe } from '../api/auth'
 import { useAuthStore } from '../store/authStore'
 import { motion } from 'framer-motion'
 import { Magnetic } from '../components/Magnetic'
+import { toast } from 'sonner'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
-  const { setAuth } = useAuthStore()
+  const { user, setAuth, convertGuest } = useAuthStore()
 
-  const [fullName, setFullName] = useState('')
+  const isGuest = Boolean(user?.is_guest)
+
+  const [fullName, setFullName] = useState(isGuest ? (user?.full_name?.startsWith('Guest-') ? '' : user?.full_name ?? '') : '')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -32,10 +35,18 @@ export default function RegisterPage() {
 
     setIsLoading(true)
     try {
-      const tokenData = await registerUser({ email, password, full_name: fullName || undefined })
-      localStorage.setItem('auth_token', tokenData.access_token)
-      const user = await getMe()
-      setAuth(tokenData.access_token, user)
+      if (isGuest) {
+        // Convert active guest account in-place to preserve data
+        await convertGuest({ email, password, full_name: fullName || undefined })
+        toast.success('Account created! Your guest interview history has been permanently saved.')
+      } else {
+        // Standard fresh registration
+        const tokenData = await registerUser({ email, password, full_name: fullName || undefined })
+        localStorage.setItem('auth_token', tokenData.access_token)
+        const userProfile = await getMe()
+        setAuth(tokenData.access_token, userProfile)
+        toast.success('Account created successfully!')
+      }
       navigate('/dashboard')
     } catch (err: any) {
       const msg = err?.response?.data?.detail || 'Registration failed. Please try again.'
@@ -81,9 +92,13 @@ export default function RegisterPage() {
           </div>
 
           <div className="relative z-10 space-y-3.5 my-12 md:my-0">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight font-display leading-tight">Hello, Friend!</h2>
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight font-display leading-tight">
+              {isGuest ? 'Save Your Progress!' : 'Hello, Friend!'}
+            </h2>
             <p className="text-xs text-white/80 leading-relaxed font-sans max-w-xs">
-              Enter your personal details and start your journey with our AI-powered mock interview sessions today.
+              {isGuest
+                ? 'Create a permanent account to keep all your guest interview scores, feedback, and ATS resumes.'
+                : 'Enter your personal details and start your journey with our AI-powered mock interview sessions today.'}
             </p>
           </div>
 
@@ -102,11 +117,25 @@ export default function RegisterPage() {
 
         {/* Left Panel: Form Panel (Rendered bottom in mobile, left in desktop) */}
         <div className="md:w-[60%] md:order-1 p-8 md:p-12 flex flex-col justify-center relative bg-slate-900/60 backdrop-blur-sm z-10">
-          <div className="max-w-md w-full mx-auto space-y-6">
+          <div className="max-w-md w-full mx-auto space-y-5">
             <div>
-              <h1 className="text-2xl font-extrabold text-white tracking-tight font-display">Create Account</h1>
-              <p className="text-slate-400 text-xs mt-1">Configure your mock coaching profile</p>
+              <h1 className="text-2xl font-extrabold text-white tracking-tight font-display">
+                {isGuest ? 'Convert to Full Account' : 'Create Account'}
+              </h1>
+              <p className="text-slate-400 text-xs mt-1">
+                {isGuest ? 'Preserve your existing evaluations & history' : 'Configure your mock coaching profile'}
+              </p>
             </div>
+
+            {/* Guest Conversion Notice */}
+            {isGuest && (
+              <div className="flex items-center gap-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-amber-300 text-xs">
+                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>
+                  All your guest interview scores and ATS analyses will be automatically attached to this new account.
+                </span>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Error Alert */}
@@ -210,10 +239,10 @@ export default function RegisterPage() {
                     {isLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin text-white" />
-                        Creating account...
+                        {isGuest ? 'Saving & Converting...' : 'Creating account...'}
                       </>
                     ) : (
-                      'Create Account'
+                      isGuest ? 'Save Progress & Create Account' : 'Create Account'
                     )}
                   </button>
                 </Magnetic>

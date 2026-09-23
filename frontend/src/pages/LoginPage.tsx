@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Sparkles, Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react'
-import { loginUser } from '../api/auth'
+import { loginUser, getMe } from '../api/auth'
 import { useAuthStore } from '../store/authStore'
-import { getMe } from '../api/auth'
 import { motion } from 'framer-motion'
 import { Magnetic } from '../components/Magnetic'
 import { toast } from 'sonner'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { setAuth } = useAuthStore()
+  const { setAuth, loginGuest } = useAuthStore()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isGuestLoading, setIsGuestLoading] = useState(false)
   const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,6 +34,21 @@ export default function LoginPage() {
       setError(msg)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleGuestLogin = async () => {
+    setError('')
+    setIsGuestLoading(true)
+    try {
+      await loginGuest()
+      toast.success('Welcome! Entered Guest Evaluation Mode.')
+      navigate('/dashboard')
+    } catch (err: any) {
+      const msg = err?.response?.data?.detail || 'Failed to start guest session. Please try again.'
+      setError(msg)
+    } finally {
+      setIsGuestLoading(false)
     }
   }
 
@@ -169,7 +184,7 @@ export default function LoginPage() {
                   <button
                     id="login-submit"
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || isGuestLoading}
                     className="w-full bg-primary hover:bg-primary/95 disabled:bg-primary/50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 border border-primary/20"
                   >
                     {isLoading ? (
@@ -179,6 +194,40 @@ export default function LoginPage() {
                       </>
                     ) : (
                       'Sign In'
+                    )}
+                  </button>
+                </Magnetic>
+              </div>
+
+              {/* Divider */}
+              <div className="relative flex items-center justify-center my-2">
+                <div className="border-t border-white/10 w-full" />
+                <span className="bg-slate-900 px-3 text-[10px] font-mono uppercase tracking-widest text-slate-500 shrink-0">
+                  or explore instantly
+                </span>
+                <div className="border-t border-white/10 w-full" />
+              </div>
+
+              {/* Continue as Guest Button */}
+              <div>
+                <Magnetic>
+                  <button
+                    id="guest-login-btn"
+                    type="button"
+                    disabled={isLoading || isGuestLoading}
+                    onClick={handleGuestLogin}
+                    className="w-full bg-slate-950/70 hover:bg-slate-850 hover:border-cyan-500/40 border border-white/10 text-slate-200 hover:text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-md shadow-black/20 group"
+                  >
+                    {isGuestLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
+                        <span className="text-sm">Entering Guest Mode...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 text-cyan-400 group-hover:rotate-12 transition-transform" />
+                        <span className="text-sm">Continue as Guest</span>
+                      </>
                     )}
                   </button>
                 </Magnetic>
