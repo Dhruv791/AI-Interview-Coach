@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, status, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from app.core.config import settings
+from app.core.database import get_db
 from app.api import auth, users, resumes, interviews, analytics
 
 app = FastAPI(
@@ -30,11 +33,24 @@ app.include_router(analytics.router, prefix=settings.API_V1_STR)
 
 # ── Health check ───────────────────────────────────────────────────────────────
 @app.get("/health", tags=["health"])
-def health_check():
-    return {"status": "ok", "service": settings.PROJECT_NAME}
+def health_check(db: Session = Depends(get_db)):
+    """Active health check that validates both web server and database connectivity.
+    Pinging this endpoint with UptimeRobot keeps both Render and Supabase active."""
+    try:
+        db.execute(text("SELECT 1"))
+        return {
+            "status": "ok",
+            "service": settings.PROJECT_NAME,
+            "database": "connected",
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Database unreachable: {str(e)}",
+        )
 
 
-# ── TEMP DEBUG ─────────────────────────────────────────────────────────────────
+# ── DEBUG ──────────────────────────────────────────────────────────────────────
 @app.get("/debug")
 def debug():
     return {

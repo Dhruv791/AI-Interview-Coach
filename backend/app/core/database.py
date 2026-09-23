@@ -2,13 +2,17 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from app.core.config import settings
 
-# pool_pre_ping=True checks for connection validity on checkouts
-# which is vital for production deployments on Render/Supabase where connections drop.
+# Optimized pool settings for cloud Postgres (Supabase pooler/Render)
+# - pool_pre_ping=True: tests connection liveness before checkout
+# - pool_recycle=300: recycles connections after 5 minutes to prevent stale dropped connections
+# - pool_timeout=10: fails fast if pool is exhausted rather than hanging requests
 engine = create_engine(
     settings.DATABASE_URL,
     pool_pre_ping=True,
-    pool_size=10,
-    max_overflow=20
+    pool_size=5,
+    max_overflow=10,
+    pool_recycle=300,
+    pool_timeout=10,
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
