@@ -12,7 +12,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
+        manualChunks(id: string): string | undefined {
           if (id.includes("node_modules")) {
             if (
               id.includes("react") ||
@@ -35,6 +35,7 @@ export default defineConfig({
             }
             return "vendor";
           }
+          return undefined;
         },
       },
     },
