@@ -59,7 +59,7 @@ def extract_text_from_pdf(file_bytes: bytes) -> str:
     return "\n".join(text_parts)
 
 
-# ── Endpoints ──────────────────────────────────────────────────────────────────
+GUEST_MAX_RESUMES = 2
 
 @router.post("/upload", response_model=ResumeOut, status_code=status.HTTP_201_CREATED)
 async def upload_resume(
@@ -68,6 +68,14 @@ async def upload_resume(
     current_user: User = Depends(get_current_user),
 ):
     """Upload a PDF resume, extract text, run Gemini analysis, save to DB."""
+    if current_user.is_guest:
+        existing_count = db.query(Resume).filter(Resume.user_id == current_user.id).count()
+        if existing_count >= GUEST_MAX_RESUMES:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Guest limit reached ({GUEST_MAX_RESUMES}/{GUEST_MAX_RESUMES} resume analyses). Please create a free account to continue analyzing resumes!",
+            )
+
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,

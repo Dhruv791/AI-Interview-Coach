@@ -72,6 +72,8 @@ class SubmitResponseRequest(BaseModel):
 
 # ── Endpoints ──────────────────────────────────────────────────────────────────
 
+GUEST_MAX_INTERVIEWS = 2
+
 @router.post("/", response_model=InterviewOut, status_code=status.HTTP_201_CREATED)
 def start_new_interview(
     payload: StartInterviewRequest,
@@ -81,6 +83,14 @@ def start_new_interview(
     """
     Initialize a new mock interview session, bulk generating questions.
     """
+    if current_user.is_guest:
+        existing_count = db.query(Interview).filter(Interview.user_id == current_user.id).count()
+        if existing_count >= GUEST_MAX_INTERVIEWS:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Guest limit reached ({GUEST_MAX_INTERVIEWS}/{GUEST_MAX_INTERVIEWS} mock interviews). Please create a free account to continue practicing!",
+            )
+
     try:
         generated = generate_interview_questions(payload.category, payload.difficulty, count=5)
     except RuntimeError as e:
