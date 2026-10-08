@@ -11,7 +11,7 @@ from google.api_core import exceptions as google_exceptions
 logger = logging.getLogger(__name__)
 
 
-def _get_client(model_name: str = "gemini-2.5-flash") -> genai.GenerativeModel:
+def _get_client(model_name: str = "gemini-3.7-flash") -> genai.GenerativeModel:
     genai.configure(api_key=settings.GEMINI_API_KEY)
     return genai.GenerativeModel(model_name)
 
@@ -26,15 +26,25 @@ def _call_gemini_with_retry(
         try:
             response = model.generate_content(prompt, generation_config=generation_config)
             return response.text.strip()
+        except google_exceptions.ResourceExhausted as e:
+            if "gemini-3.7-flash" not in model.model_name:
+                logger.warning(f"Model {model.model_name} quota exceeded. Falling back to gemini-3.7-flash...")
+                fallback_model = _get_client("gemini-3.7-flash")
+                return _call_gemini_with_retry(fallback_model, prompt, generation_config, max_retries=2)
+            if attempt == max_retries - 1:
+                logger.error(f"Gemini API quota exhausted after {max_retries} attempts: {e}")
+                raise RuntimeError(f"Gemini API rate limit or service error: {e}")
+            sleep_time = (2 ** attempt) * 1.5
+            logger.warning(f"Gemini API attempt {attempt + 1} rate limited. Retrying in {sleep_time:.1f}s...")
+            time.sleep(sleep_time)
         except (
-            google_exceptions.ResourceExhausted,
             google_exceptions.ServiceUnavailable,
             google_exceptions.DeadlineExceeded,
             google_exceptions.InternalServerError
         ) as e:
             if attempt == max_retries - 1:
                 logger.error(f"Gemini API failed after {max_retries} attempts: {e}")
-                raise RuntimeError(f"Gemini API rate limit or service error: {e}")
+                raise RuntimeError(f"Gemini API service error: {e}")
             sleep_time = (2 ** attempt) * 1.5
             logger.warning(f"Gemini API attempt {attempt + 1} failed ({e}). Retrying in {sleep_time:.1f}s...")
             time.sleep(sleep_time)
@@ -94,7 +104,7 @@ def generate_interview_questions(category: str, difficulty: str, count: int = 5,
     if not settings.GEMINI_API_KEY:
         raise RuntimeError("GEMINI_API_KEY is not configured.")
 
-    model_name = "gemini-2.5-flash" if is_guest else (settings.GEMINI_MODEL or "gemini-2.5-flash")
+    model_name = "gemini-3.7-flash" if is_guest else (settings.GEMINI_MODEL or "gemini-3.7-flash")
     model = _get_client(model_name=model_name)
     prompt = QUESTIONS_PROMPT.format(category=category, difficulty=difficulty, count=count)
 
@@ -128,7 +138,7 @@ def evaluate_candidate_response(question: str, suggested_answer: str, user_answe
     if not settings.GEMINI_API_KEY:
         raise RuntimeError("GEMINI_API_KEY is not configured.")
 
-    model_name = "gemini-2.5-flash" if is_guest else (settings.GEMINI_MODEL or "gemini-2.5-flash")
+    model_name = "gemini-3.7-flash" if is_guest else (settings.GEMINI_MODEL or "gemini-3.7-flash")
     model = _get_client(model_name=model_name)
     prompt = EVALUATION_PROMPT.format(
         question=question,
