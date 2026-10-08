@@ -4,9 +4,43 @@ from typing import List, Dict, Any
 from app.core.config import settings
 
 
-def _get_client() -> genai.GenerativeModel:
+import time
+import logging
+from google.api_core import exceptions as google_exceptions
+
+logger = logging.getLogger(__name__)
+
+
+def _get_client(model_name: str = "gemini-2.5-flash") -> genai.GenerativeModel:
     genai.configure(api_key=settings.GEMINI_API_KEY)
-    return genai.GenerativeModel("gemini-2.5-flash")
+    return genai.GenerativeModel(model_name)
+
+
+def _call_gemini_with_retry(
+    model: genai.GenerativeModel,
+    prompt: str,
+    generation_config: genai.types.GenerationConfig,
+    max_retries: int = 3,
+) -> str:
+    for attempt in range(max_retries):
+        try:
+            response = model.generate_content(prompt, generation_config=generation_config)
+            return response.text.strip()
+        except (
+            google_exceptions.ResourceExhausted,
+            google_exceptions.ServiceUnavailable,
+            google_exceptions.DeadlineExceeded,
+            google_exceptions.InternalServerError
+        ) as e:
+            if attempt == max_retries - 1:
+                logger.error(f"Gemini API failed after {max_retries} attempts: {e}")
+                raise RuntimeError(f"Gemini API rate limit or service error: {e}")
+            sleep_time = (2 ** attempt) * 1.5
+            logger.warning(f"Gemini API attempt {attempt + 1} failed ({e}). Retrying in {sleep_time:.1f}s...")
+            time.sleep(sleep_time)
+        except Exception as e:
+            logger.error(f"Gemini API unexpected error: {e}")
+            raise RuntimeError(f"Gemini API error: {e}")
 
 
 QUESTIONS_PROMPT = """
@@ -53,14 +87,15 @@ Respond with ONLY valid JSON. No markdown, no code fences.
 """
 
 
-def generate_interview_questions(category: str, difficulty: str, count: int = 5) -> List[Dict[str, Any]]:
+def generate_interview_questions(category: str, difficulty: str, count: int = 5, is_guest: bool = False) -> List[Dict[str, Any]]:
     """
     Generates a set of questions along with their model answers from Gemini.
     """
     if not settings.GEMINI_API_KEY:
         raise RuntimeError("GEMINI_API_KEY is not configured.")
 
-    model = _get_client()
+    model_name = "gemini-2.5-flash" if is_guest else (settings.GEMINI_MODEL or "gemini-2.5-flash")
+    model = _get_client(model_name=model_name)
     prompt = QUESTIONS_PROMPT.format(category=category, difficulty=difficulty, count=count)
 
     try:
@@ -68,8 +103,7 @@ def generate_interview_questions(category: str, difficulty: str, count: int = 5)
             temperature=0.7,
             response_mime_type="application/json"
         )
-        response = model.generate_content(prompt, generation_config=generation_config)
-        raw_text = response.text.strip()
+        raw_text = _call_gemini_with_retry(model, prompt, generation_config=generation_config)
 
         # Clean markdown wrappers if any
         if raw_text.startswith("```"):
@@ -87,14 +121,15 @@ def generate_interview_questions(category: str, difficulty: str, count: int = 5)
         raise RuntimeError(f"Failed to generate interview questions: {e}")
 
 
-def evaluate_candidate_response(question: str, suggested_answer: str, user_answer: str) -> Dict[str, Any]:
+def evaluate_candidate_response(question: str, suggested_answer: str, user_answer: str, is_guest: bool = False) -> Dict[str, Any]:
     """
     Evaluates a candidate's answer against the model answer and returns score, critique, and suggestions.
     """
     if not settings.GEMINI_API_KEY:
         raise RuntimeError("GEMINI_API_KEY is not configured.")
 
-    model = _get_client()
+    model_name = "gemini-2.5-flash" if is_guest else (settings.GEMINI_MODEL or "gemini-2.5-flash")
+    model = _get_client(model_name=model_name)
     prompt = EVALUATION_PROMPT.format(
         question=question,
         suggested_answer=suggested_answer,
@@ -106,8 +141,7 @@ def evaluate_candidate_response(question: str, suggested_answer: str, user_answe
             temperature=0.2,  # Lower temperature for more objective grading
             response_mime_type="application/json"
         )
-        response = model.generate_content(prompt, generation_config=generation_config)
-        raw_text = response.text.strip()
+        raw_text = _call_gemini_with_retry(model, prompt, generation_config=generation_config)
 
         if raw_text.startswith("```"):
             raw_text = raw_text.split("```")[1]

@@ -24,6 +24,7 @@ class ResumeAnalysis(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     resume_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("resumes.id", ondelete="CASCADE"), unique=True, nullable=False)
     ats_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    score_breakdown: Mapped[dict] = mapped_column(JSON, nullable=True)  # Detailed 6-category subscores
     strengths: Mapped[list | dict] = mapped_column(JSON, nullable=True)  # List of strengths
     weaknesses: Mapped[list | dict] = mapped_column(JSON, nullable=True)  # List of weaknesses
     recommendations: Mapped[list | dict] = mapped_column(JSON, nullable=True)  # List of improvement steps

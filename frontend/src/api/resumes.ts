@@ -1,8 +1,18 @@
 import { apiClient } from './client'
 
+export interface ScoreBreakdown {
+  contact_and_links: number
+  section_structure: number
+  quantified_metrics: number
+  technical_depth: number
+  impact_and_experience: number
+  action_verbs_and_writing: number
+}
+
 export interface ResumeAnalysis {
   id: string
   ats_score: number
+  score_breakdown?: ScoreBreakdown
   strengths: string[]
   weaknesses: string[]
   recommendations: string[]

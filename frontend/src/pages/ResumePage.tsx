@@ -139,22 +139,63 @@ export default function ResumePage() {
   }
 
   const getScoreColorClass = (score: number) => {
-    if (score >= 80) return 'text-emerald-450 stroke-emerald-500'
-    if (score >= 60) return 'text-yellow-400 stroke-yellow-500'
+    if (score >= 85) return 'text-emerald-450 stroke-emerald-500'
+    if (score >= 70) return 'text-teal-400 stroke-teal-500'
+    if (score >= 50) return 'text-amber-400 stroke-amber-500'
     return 'text-red-400 stroke-red-500'
   }
 
   const getScoreGlowStyle = (score: number) => {
-    if (score >= 80) return 'rgba(52, 211, 153, 0.25)'
-    if (score >= 60) return 'rgba(250, 204, 21, 0.25)'
+    if (score >= 85) return 'rgba(52, 211, 153, 0.25)'
+    if (score >= 70) return 'rgba(45, 212, 191, 0.25)'
+    if (score >= 50) return 'rgba(251, 191, 36, 0.25)'
     return 'rgba(248, 113, 113, 0.25)'
   }
 
   const getScoreBgColor = (score: number) => {
-    if (score >= 80) return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-    if (score >= 60) return 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+    if (score >= 85) return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+    if (score >= 70) return 'bg-teal-500/10 text-teal-400 border border-teal-500/20'
+    if (score >= 50) return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
     return 'bg-red-500/10 text-red-400 border border-red-500/20'
   }
+
+  const getScoreStatusInfo = (score: number) => {
+    if (score >= 85) {
+      return {
+        label: 'ATS Optimized — Exceptional Match',
+        desc: 'High keyword density, clear quantifiable outcomes, and strong structure.',
+        color: 'text-emerald-400',
+      }
+    }
+    if (score >= 70) {
+      return {
+        label: 'Strong Match — Minor Refinements Needed',
+        desc: 'Solid technical background with minor gaps in metrics or formatting.',
+        color: 'text-teal-400',
+      }
+    }
+    if (score >= 50) {
+      return {
+        label: 'Moderate Match — Keyword & Metric Gaps',
+        desc: 'Missing key technical depth, quantified metrics, or action verbs.',
+        color: 'text-amber-400',
+      }
+    }
+    return {
+      label: 'Needs Major Revision — Low ATS Compatibility',
+      desc: 'Lacks measurable impact, critical section structures, or technical depth.',
+      color: 'text-red-400',
+    }
+  }
+
+  const BREAKDOWN_CATEGORIES = [
+    { key: 'technical_depth' as const, label: 'Technical Depth', max: 25, icon: '🛠️' },
+    { key: 'impact_and_experience' as const, label: 'Impact & Scope', max: 25, icon: '💼' },
+    { key: 'action_verbs_and_writing' as const, label: 'Action Verbs & Style', max: 15, icon: '✍️' },
+    { key: 'contact_and_links' as const, label: 'Contact & Links', max: 15, icon: '🔗' },
+    { key: 'quantified_metrics' as const, label: 'Quantified Metrics', max: 10, icon: '📊' },
+    { key: 'section_structure' as const, label: 'Section Structure', max: 10, icon: '📑' },
+  ]
 
   // Filter & Sort list
   const filteredResumes = resumes
@@ -407,14 +448,19 @@ export default function ResumePage() {
 
                       <div>
                         <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider font-mono">ATS INDEX</p>
-                        <p className={clsx(
-                          'text-xs font-bold tracking-wide mt-0.5',
-                          getScoreColorClass(selectedResume.analysis.ats_score).split(' ')[0]
-                        )}>
-                          {selectedResume.analysis.ats_score >= 80 ? 'ATS Optimization Complete' :
-                           selectedResume.analysis.ats_score >= 60 ? 'Candidate Score Profile Match' :
-                           'Needs Keyword Revision'}
-                        </p>
+                        {(() => {
+                          const statusInfo = getScoreStatusInfo(selectedResume.analysis.ats_score)
+                          return (
+                            <div>
+                              <p className={clsx('text-xs font-bold tracking-wide mt-0.5', statusInfo.color)}>
+                                {statusInfo.label}
+                              </p>
+                              <p className="text-[10px] text-slate-400 mt-0.5 max-w-[260px] leading-tight">
+                                {statusInfo.desc}
+                              </p>
+                            </div>
+                          )
+                        })()}
                       </div>
                     </div>
                   )}
@@ -423,6 +469,49 @@ export default function ResumePage() {
 
               {selectedResume.analysis ? (
                 <div className="space-y-6">
+                  {/* Category Score Breakdown Component */}
+                  {selectedResume.analysis.score_breakdown && (
+                    <div className="bg-slate-950/40 border border-white/5 rounded-2xl p-5 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-primary" /> Calibrated ATS Category Breakdown
+                        </h3>
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          Computed Total: <strong className="text-white">{selectedResume.analysis.ats_score}</strong> / 100
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        {BREAKDOWN_CATEGORIES.map((cat) => {
+                          const value = selectedResume.analysis?.score_breakdown?.[cat.key] ?? 0
+                          const percentage = Math.round((value / cat.max) * 100)
+                          return (
+                            <div key={cat.key} className="bg-slate-900/80 border border-white/5 rounded-xl p-3.5 space-y-2">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="font-semibold text-slate-300 flex items-center gap-1.5 text-[11px]">
+                                  <span>{cat.icon}</span> {cat.label}
+                                </span>
+                                <span className="font-mono font-bold text-white text-xs">
+                                  {value}<span className="text-slate-500 font-normal">/{cat.max}</span>
+                                </span>
+                              </div>
+                              <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden border border-white/5">
+                                <div
+                                  className={clsx(
+                                    'h-full rounded-full transition-all duration-500',
+                                    percentage >= 80 ? 'bg-emerald-400' :
+                                    percentage >= 60 ? 'bg-teal-400' :
+                                    percentage >= 40 ? 'bg-amber-400' : 'bg-red-400'
+                                  )}
+                                  style={{ width: `${Math.min(100, Math.max(5, percentage))}%` }}
+                                />
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Navigation Tabs Pill selector */}
                   <div className="flex bg-slate-950/60 p-1 border border-white/5 rounded-full w-max gap-1">
                     {(['strengths', 'weaknesses', 'recommendations'] as const).map((tab) => {

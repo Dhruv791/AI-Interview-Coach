@@ -27,6 +27,7 @@ router = APIRouter(prefix="/resumes", tags=["resumes"])
 class AnalysisOut(BaseModel):
     id: uuid.UUID
     ats_score: int
+    score_breakdown: Optional[dict] = None
     strengths: list
     weaknesses: list
     recommendations: list
@@ -115,9 +116,9 @@ async def upload_resume(
     db.add(resume)
     db.flush()  # get resume.id without committing
 
-    # Run Gemini analysis
+    # Run Gemini analysis with model routing
     try:
-        analysis_data = analyze_resume(resume_text)
+        analysis_data = analyze_resume(resume_text, is_guest=current_user.is_guest)
     except RuntimeError as e:
         db.rollback()
         raise HTTPException(
@@ -129,6 +130,7 @@ async def upload_resume(
         id=uuid.uuid4(),
         resume_id=resume.id,
         ats_score=analysis_data["ats_score"],
+        score_breakdown=analysis_data.get("score_breakdown"),
         strengths=analysis_data["strengths"],
         weaknesses=analysis_data["weaknesses"],
         recommendations=analysis_data["recommendations"],
