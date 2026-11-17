@@ -10,9 +10,9 @@ from app.core.config import settings
 logger = logging.getLogger(__name__)
 
 
-def _get_client(model_name: str = "gemini-3.7-flash") -> genai.GenerativeModel:
-    genai.configure(api_key=settings.GEMINI_API_KEY)
-    return genai.GenerativeModel(model_name)
+def _get_client(model_name: str = None) -> genai.GenerativeModel:
+    genai.configure(api_key=settings.GEMINI_API_KEY, transport="rest")
+    return genai.GenerativeModel(model_name or settings.GEMINI_MODEL or "gemini-3.1-flash-lite")
 
 
 def _call_gemini_with_retry(
@@ -21,23 +21,17 @@ def _call_gemini_with_retry(
     generation_config: genai.types.GenerationConfig,
     max_retries: int = 3,
 ) -> str:
-    """Execute Gemini API call with exponential backoff for transient errors and fallback for quota limits."""
+    """Execute Gemini API call with exponential backoff for transient errors."""
     for attempt in range(max_retries):
         try:
             response = model.generate_content(prompt, generation_config=generation_config)
             return response.text.strip()
         except google_exceptions.ResourceExhausted as e:
-            err_msg = str(e)
-            # If it's a hard daily free tier quota on a specific model, try fallback to gemini-3.7-flash
-            if "gemini-3.7-flash" not in model.model_name:
-                logger.warning(f"Model {model.model_name} quota exceeded. Falling back to gemini-3.7-flash...")
-                fallback_model = _get_client("gemini-3.7-flash")
-                return _call_gemini_with_retry(fallback_model, prompt, generation_config, max_retries=2)
             if attempt == max_retries - 1:
-                logger.error(f"Gemini API quota exhausted after {max_retries} attempts: {e}")
+                logger.error(f"Gemini API quota exhausted after {max_retries} attempts on {model.model_name}: {e}")
                 raise RuntimeError(f"Gemini API rate limit or service error: {e}")
-            sleep_time = (2 ** attempt) * 1.5
-            logger.warning(f"Gemini API attempt {attempt + 1} rate limited. Retrying in {sleep_time:.1f}s...")
+            sleep_time = (2 ** attempt) * 2 + 2
+            logger.warning(f"Gemini API attempt {attempt + 1} rate limited on {model.model_name}. Retrying in {sleep_time:.1f}s...")
             time.sleep(sleep_time)
         except (
             google_exceptions.ServiceUnavailable,  # 503
@@ -224,7 +218,7 @@ def analyze_resume(resume_text: str, is_guest: bool = False) -> dict:
     objective_scores, details = calculate_objective_metrics(resume_text)
 
     # 2. Select model (Guests always use Flash, registered users use configured GEMINI_MODEL)
-    model_name = "gemini-3.7-flash" if is_guest else (settings.GEMINI_MODEL or "gemini-3.7-flash")
+    model_name = settings.GEMINI_MODEL or "gemini-3.1-flash-lite"
     model = _get_client(model_name=model_name)
 
     prompt = SUBJECTIVE_ANALYSIS_PROMPT.format(

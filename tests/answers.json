@@ -1,0 +1,92 @@
+[
+  {
+    "id": "be_1_weak",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+    "suggested_answer": "SQL (relational) databases organize data into structured tables with predefined schemas, enforce ACID transactions, and excel at complex relational queries via joins (e.g., PostgreSQL, MySQL). They are ideal for systems requiring strict consistency and transactional integrity, such as financial ledgering, payments, and order processing. NoSQL (non-relational) databases offer flexible schemas and scale horizontally with higher write availability under the CAP theorem, spanning document stores (MongoDB), key-value caches (Redis), and wide-column stores (Cassandra). They are chosen for high-throughput, rapidly evolving, or unstructured data like session caching, real-time analytics, and distributed event feeds.",
+    "answer": "SQL is the old one and NoSQL is the new one. NoSQL is faster so I would use it mostly.",
+    "expected_range": [10, 30]
+  },
+  {
+    "id": "be_2_weak_plus",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+    "suggested_answer": "SQL (relational) databases organize data into structured tables with predefined schemas, enforce ACID transactions, and excel at complex relational queries via joins (e.g., PostgreSQL, MySQL). They are ideal for systems requiring strict consistency and transactional integrity, such as financial ledgering, payments, and order processing. NoSQL (non-relational) databases offer flexible schemas and scale horizontally with higher write availability under the CAP theorem, spanning document stores (MongoDB), key-value caches (Redis), and wide-column stores (Cassandra). They are chosen for high-throughput, rapidly evolving, or unstructured data like session caching, real-time analytics, and distributed event feeds.",
+    "answer": "SQL databases like MySQL store data in tables with rows and columns. NoSQL databases like MongoDB store data as documents. SQL is used when data is structured and NoSQL is used when data is unstructured. NoSQL is also more scalable.",
+    "expected_range": [30, 50]
+  },
+  {
+    "id": "be_3_average",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+    "suggested_answer": "SQL (relational) databases organize data into structured tables with predefined schemas, enforce ACID transactions, and excel at complex relational queries via joins (e.g., PostgreSQL, MySQL). They are ideal for systems requiring strict consistency and transactional integrity, such as financial ledgering, payments, and order processing. NoSQL (non-relational) databases offer flexible schemas and scale horizontally with higher write availability under the CAP theorem, spanning document stores (MongoDB), key-value caches (Redis), and wide-column stores (Cassandra). They are chosen for high-throughput, rapidly evolving, or unstructured data like session caching, real-time analytics, and distributed event feeds.",
+    "answer": "SQL databases are relational. They use a fixed schema, tables, and joins, and they support ACID transactions, so they are a good fit for things like banking or orders where consistency matters. NoSQL databases like MongoDB or Redis are non-relational and have flexible schemas. They are usually easier to scale horizontally, so I would pick them for large volumes of changing data such as logs or user activity. In short, SQL for structured data with relationships, NoSQL for flexible data at scale.",
+    "expected_range": [50, 68]
+  },
+  {
+    "id": "be_4_good",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+    "suggested_answer": "SQL (relational) databases organize data into structured tables with predefined schemas, enforce ACID transactions, and excel at complex relational queries via joins (e.g., PostgreSQL, MySQL). They are ideal for systems requiring strict consistency and transactional integrity, such as financial ledgering, payments, and order processing. NoSQL (non-relational) databases offer flexible schemas and scale horizontally with higher write availability under the CAP theorem, spanning document stores (MongoDB), key-value caches (Redis), and wide-column stores (Cassandra). They are chosen for high-throughput, rapidly evolving, or unstructured data like session caching, real-time analytics, and distributed event feeds.",
+    "answer": "The core difference is the data model and the guarantees. Relational databases like PostgreSQL enforce a schema, support joins and full ACID transactions, so they suit data with clear relationships and strict consistency, for example payments or inventory. NoSQL is several families: document stores like MongoDB, key-value stores like Redis, wide-column stores like Cassandra. They trade some consistency or query flexibility for easier horizontal scaling and flexible schemas. I would choose SQL by default for business data, and add NoSQL for a specific need, like Redis for caching or a document store for varied product attributes. One thing people forget is that PostgreSQL also supports JSONB, so the choice is not always either-or.",
+    "expected_range": [68, 82]
+  },
+  {
+    "id": "be_5_strong",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+    "suggested_answer": "SQL (relational) databases organize data into structured tables with predefined schemas, enforce ACID transactions, and excel at complex relational queries via joins (e.g., PostgreSQL, MySQL). They are ideal for systems requiring strict consistency and transactional integrity, such as financial ledgering, payments, and order processing. NoSQL (non-relational) databases offer flexible schemas and scale horizontally with higher write availability under the CAP theorem, spanning document stores (MongoDB), key-value caches (Redis), and wide-column stores (Cassandra). They are chosen for high-throughput, rapidly evolving, or unstructured data like session caching, real-time analytics, and distributed event feeds.",
+    "answer": "I decide based on access patterns and consistency needs, not on SQL versus NoSQL as a label. Relational databases like PostgreSQL give a fixed schema, joins, and ACID transactions, which makes them the right default for data with relationships and invariants, such as orders and payments, where a half-written update is unacceptable. NoSQL covers different tools: key-value (Redis) for low-latency caching and sessions, document stores (MongoDB) for records with varying shape, wide-column (Cassandra) for very high write throughput across regions. The trade-off is usually weaker joins and, depending on configuration, eventual consistency under the CAP theorem. In my last project I kept orders in PostgreSQL, used Redis to cache hot product reads, which cut p95 latency noticeably, and stored flexible event payloads in JSONB instead of adding a second database. I would only add a separate NoSQL store when load or data shape clearly justified the extra operational cost.",
+    "expected_range": [82, 95]
+  },
+  {
+    "id": "hr_1_weak",
+    "category": "HR",
+    "difficulty": "Easy",
+    "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+    "suggested_answer": "A strong behavioural response uses the STAR method (Situation, Task, Action, Result) to demonstrate active listening, constructive communication, and collaborative conflict resolution: 1. Situation & Task: Describe a specific, professional technical disagreement or constraint without blaming teammates. 2. Action: Proactively de-escalate emotional friction, listen to understand underlying concerns/constraints, evaluate objective data or trade-offs (e.g., trade-off matrix, proof of concept, or phased delivery), and find common ground. 3. Result & Learning: Highlight a positive project outcome and reflect on interpersonal growth and stronger ongoing teamwork.",
+    "answer": "I do not really have conflicts. I just do my work and ignore people who are difficult.",
+    "expected_range": [5, 25]
+  },
+  {
+    "id": "hr_2_weak_plus",
+    "category": "HR",
+    "difficulty": "Easy",
+    "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+    "suggested_answer": "A strong behavioural response uses the STAR method (Situation, Task, Action, Result) to demonstrate active listening, constructive communication, and collaborative conflict resolution: 1. Situation & Task: Describe a specific, professional technical disagreement or constraint without blaming teammates. 2. Action: Proactively de-escalate emotional friction, listen to understand underlying concerns/constraints, evaluate objective data or trade-offs (e.g., trade-off matrix, proof of concept, or phased delivery), and find common ground. 3. Result & Learning: Highlight a positive project outcome and reflect on interpersonal growth and stronger ongoing teamwork.",
+    "answer": "In my college project, my teammate and I disagreed about which technology to use. We argued for some time, then I agreed with him to avoid more problems and we finished the project.",
+    "expected_range": [25, 45]
+  },
+  {
+    "id": "hr_3_average",
+    "category": "HR",
+    "difficulty": "Easy",
+    "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+    "suggested_answer": "A strong behavioural response uses the STAR method (Situation, Task, Action, Result) to demonstrate active listening, constructive communication, and collaborative conflict resolution: 1. Situation & Task: Describe a specific, professional technical disagreement or constraint without blaming teammates. 2. Action: Proactively de-escalate emotional friction, listen to understand underlying concerns/constraints, evaluate objective data or trade-offs (e.g., trade-off matrix, proof of concept, or phased delivery), and find common ground. 3. Result & Learning: Highlight a positive project outcome and reflect on interpersonal growth and stronger ongoing teamwork.",
+    "answer": "During my final-year project, a teammate and I disagreed about whether to use MongoDB or MySQL. I felt MySQL was better because our data was relational. I suggested we list the pros and cons together and ask our guide for input. After discussing, we chose MySQL. The project went well and we learned to talk things through calmly.",
+    "expected_range": [48, 65]
+  },
+  {
+    "id": "hr_4_good",
+    "category": "HR",
+    "difficulty": "Easy",
+    "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+    "suggested_answer": "A strong behavioural response uses the STAR method (Situation, Task, Action, Result) to demonstrate active listening, constructive communication, and collaborative conflict resolution: 1. Situation & Task: Describe a specific, professional technical disagreement or constraint without blaming teammates. 2. Action: Proactively de-escalate emotional friction, listen to understand underlying concerns/constraints, evaluate objective data or trade-offs (e.g., trade-off matrix, proof of concept, or phased delivery), and find common ground. 3. Result & Learning: Highlight a positive project outcome and reflect on interpersonal growth and stronger ongoing teamwork.",
+    "answer": "In my internship, a teammate and I disagreed about how to structure an API. He wanted one large endpoint to save time, and I was worried about maintainability. Instead of arguing, I asked him what deadline pressure he was facing, and it turned out the demo was in three days. I proposed building his simple version first and refactoring after the demo, and we wrote down the follow-up task. The demo went fine, and we refactored the following week. I learned to understand the constraint behind a position before defending mine.",
+    "expected_range": [65, 80]
+  },
+  {
+    "id": "hr_5_strong",
+    "category": "HR",
+    "difficulty": "Easy",
+    "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+    "suggested_answer": "A strong behavioural response uses the STAR method (Situation, Task, Action, Result) to demonstrate active listening, constructive communication, and collaborative conflict resolution: 1. Situation & Task: Describe a specific, professional technical disagreement or constraint without blaming teammates. 2. Action: Proactively de-escalate emotional friction, listen to understand underlying concerns/constraints, evaluate objective data or trade-offs (e.g., trade-off matrix, proof of concept, or phased delivery), and find common ground. 3. Result & Learning: Highlight a positive project outcome and reflect on interpersonal growth and stronger ongoing teamwork.",
+    "answer": "Situation: in my internship, a teammate and I disagreed on how to build a reporting API two weeks before a client demo. He wanted a single large endpoint for speed. I was concerned about maintainability and slow queries. Task: we needed an approach we both could commit to without missing the demo. Action: I asked what was driving his preference, and learned he was worried about the deadline. I proposed splitting the work: we ship his simpler version for the demo, and I would profile it afterwards. We agreed on a measurable trigger for refactoring, any query above 2 seconds, and I put the follow-up in the sprint board. Result: the demo shipped on time, profiling found 3 slow queries, and the refactor cut report time from 6 seconds to 1.5 seconds. My teammate later asked me to review his next design early. I learned that most conflicts are about different constraints, so I now ask about the constraint before arguing about the solution.",
+    "expected_range": [82, 95]
+  }
+]

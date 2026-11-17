@@ -1,0 +1,155 @@
+{
+  "resumes": [],
+  "answers": [
+    {
+      "id": "be_1_weak",
+      "category": "Backend",
+      "difficulty": "Medium",
+      "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+      "answer": "SQL is the old one and NoSQL is the new one. NoSQL is faster so I would use it mostly.",
+      "expected_range": [
+        10,
+        30
+      ],
+      "score": 20,
+      "in_range": true,
+      "critique": "The candidate's response is superficial and factually misleading. By stating 'SQL is the old one and NoSQL is the new one', the candidate relies on chronological age rather than architectural purpose, ignoring that both paradigms have coexisted for decades. The claim 'NoSQL is faster so I would use it mostly' is a dangerous oversimplification; performance in databases is highly dependent on the specific workload (read vs. write), data structure, and consistency requirements. The candidate fails to mention fundamental concepts like ACID compliance, schema rigidity, horizontal vs. vertical scaling, or the CAP theorem.",
+      "suggestions": "Research the core differences between relational (SQL) and non-relational (NoSQL) models. Study the CAP theorem to understand the trade-offs between consistency, availability, and partition tolerance. Learn about specific use cases: SQL is typically preferred for complex transactions and structured data requiring ACID compliance, while NoSQL (e.g., document, key-value, graph) is often chosen for high-velocity, unstructured data or horizontal scalability. Familiarize yourself with terms like 'schema-on-write' vs 'schema-on-read' and 'normalization' vs 'denormalization'."
+    },
+    {
+      "id": "be_2_weak_plus",
+      "category": "Backend",
+      "difficulty": "Medium",
+      "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+      "answer": "SQL databases like MySQL store data in tables with rows and columns. NoSQL databases like MongoDB store data as documents. SQL is used when data is structured and NoSQL is used when data is unstructured. NoSQL is also more scalable.",
+      "expected_range": [
+        30,
+        50
+      ],
+      "score": 45,
+      "in_range": true,
+      "critique": "The candidate provides a basic, high-level distinction between SQL and NoSQL, correctly identifying that 'SQL databases like MySQL store data in tables' and 'NoSQL databases like MongoDB store data as documents'. However, the response is overly simplistic. The claim that 'SQL is used when data is structured and NoSQL is used when data is unstructured' is a common oversimplification that ignores the existence of semi-structured data in SQL (e.g., JSONB in PostgreSQL) and schema enforcement in many NoSQL systems. Furthermore, the assertion that 'NoSQL is also more scalable' is vague; it fails to distinguish between vertical and horizontal scaling or explain the underlying architectural trade-offs like ACID compliance versus BASE consistency models.",
+      "suggestions": "To improve, move beyond the 'structured vs. unstructured' dichotomy. Discuss the CAP theorem (Consistency, Availability, Partition Tolerance) to explain why one might choose a system. Introduce the concept of ACID transactions (typical in SQL) versus eventual consistency (often found in NoSQL). Mention specific use cases: SQL for complex joins and relational integrity, and NoSQL for high-velocity write throughput, horizontal sharding, or flexible schema evolution. Research 'Polyglot Persistence' to understand how modern architectures often use both."
+    },
+    {
+      "id": "be_3_average",
+      "category": "Backend",
+      "difficulty": "Medium",
+      "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+      "answer": "SQL databases are relational. They use a fixed schema, tables, and joins, and they support ACID transactions, so they are a good fit for things like banking or orders where consistency matters. NoSQL databases like MongoDB or Redis are non-relational and have flexible schemas. They are usually easier to scale horizontally, so I would pick them for large volumes of changing data such as logs or user activity. In short, SQL for structured data with relationships, NoSQL for flexible data at scale.",
+      "expected_range": [
+        50,
+        68
+      ],
+      "score": 62,
+      "in_range": true,
+      "critique": "The candidate provides a competent, high-level overview, correctly identifying that SQL databases are 'relational' with a 'fixed schema' and 'ACID transactions', while NoSQL databases offer 'flexible schemas' and are 'easier to scale horizontally'. However, the response remains at a textbook level. It fails to address the CAP theorem (Consistency, Availability, Partition Tolerance), which is the fundamental architectural trade-off governing database selection. Furthermore, the candidate misses nuances regarding consistency models (e.g., eventual vs. strong consistency), the operational complexity of managing distributed systems, and the fact that many modern SQL databases now support JSONB or horizontal scaling via sharding, blurring the lines between the two categories.",
+      "suggestions": "To improve, incorporate the CAP theorem to explain why NoSQL is often chosen for high availability and partition tolerance. Discuss the trade-offs between 'strong consistency' (SQL) and 'eventual consistency' (NoSQL). Mention that the distinction is no longer binary; discuss 'NewSQL' or the evolution of relational databases (e.g., PostgreSQL's JSONB support) to show a more nuanced understanding of modern data architecture."
+    },
+    {
+      "id": "be_4_good",
+      "category": "Backend",
+      "difficulty": "Medium",
+      "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+      "answer": "The core difference is the data model and the guarantees. Relational databases like PostgreSQL enforce a schema, support joins and full ACID transactions, so they suit data with clear relationships and strict consistency, for example payments or inventory. NoSQL is several families: document stores like MongoDB, key-value stores like Redis, wide-column stores like Cassandra. They trade some consistency or query flexibility for easier horizontal scaling and flexible schemas. I would choose SQL by default for business data, and add NoSQL for a specific need, like Redis for caching or a document store for varied product attributes. One thing people forget is that PostgreSQL also supports JSONB, so the choice is not always either-or.",
+      "expected_range": [
+        68,
+        82
+      ],
+      "score": 78,
+      "in_range": true,
+      "critique": "The candidate provides a strong, accurate overview of the fundamental differences between SQL and NoSQL. They correctly identify that SQL databases 'enforce a schema' and 'support joins and full ACID transactions,' while NoSQL systems 'trade some consistency or query flexibility for easier horizontal scaling.' The mention of 'PostgreSQL also supports JSONB' is a sophisticated observation that demonstrates an understanding of modern database convergence. However, the answer lacks depth regarding the CAP theorem (Consistency, Availability, Partition Tolerance) or the PACELC theorem, which are the theoretical foundations for these trade-offs. The candidate also misses the operational implications of these choices, such as the complexity of managing distributed transactions in NoSQL versus the vertical scaling limitations of traditional RDBMS.",
+      "suggestions": "To elevate this answer, explicitly reference the CAP theorem to explain why NoSQL systems often favor Availability or Partition Tolerance over strict Consistency. Discuss the 'PACELC' theorem to explain the trade-off between latency and consistency even when the system is running normally. Additionally, mention specific operational trade-offs like the difficulty of performing complex analytical queries (OLAP) in non-relational stores compared to the mature ecosystem of SQL-based reporting tools."
+    },
+    {
+      "id": "be_5_strong",
+      "category": "Backend",
+      "difficulty": "Medium",
+      "question": "Explain the difference between SQL and NoSQL databases and when you would choose each.",
+      "answer": "I decide based on access patterns and consistency needs, not on SQL versus NoSQL as a label. Relational databases like PostgreSQL give a fixed schema, joins, and ACID transactions, which makes them the right default for data with relationships and invariants, such as orders and payments, where a half-written update is unacceptable. NoSQL covers different tools: key-value (Redis) for low-latency caching and sessions, document stores (MongoDB) for records with varying shape, wide-column (Cassandra) for very high write throughput across regions. The trade-off is usually weaker joins and, depending on configuration, eventual consistency under the CAP theorem. In my last project I kept orders in PostgreSQL, used Redis to cache hot product reads, which cut p95 latency noticeably, and stored flexible event payloads in JSONB instead of adding a second database. I would only add a separate NoSQL store when load or data shape clearly justified the extra operational cost.",
+      "expected_range": [
+        82,
+        95
+      ],
+      "score": 88,
+      "in_range": true,
+      "critique": "The candidate provides an exceptional, pragmatic response that moves beyond textbook definitions to focus on architectural decision-making. By stating 'I decide based on access patterns and consistency needs, not on SQL versus NoSQL as a label,' the candidate demonstrates a senior-level mindset. They correctly identify the strengths of relational databases for 'invariants, such as orders and payments' and accurately categorize NoSQL tools by their specific use cases (e.g., 'Redis for low-latency caching', 'Cassandra for very high write throughput'). The mention of using 'JSONB' in PostgreSQL to avoid 'adding a second database' shows a sophisticated understanding of modern database capabilities and the operational overhead of polyglot persistence.",
+      "suggestions": "To reach the highest level of mastery, explicitly discuss the 'PACELC' theorem to complement the CAP theorem mentioned, as it provides a more nuanced view of the latency-consistency trade-off during normal operation. Additionally, briefly touching upon the operational complexity of distributed systems (e.g., handling schema migrations in NoSQL vs. SQL, or the challenges of cross-shard transactions in distributed NoSQL stores) would further demonstrate an understanding of the full lifecycle of these systems."
+    },
+    {
+      "id": "hr_1_weak",
+      "category": "HR",
+      "difficulty": "Easy",
+      "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+      "answer": "I do not really have conflicts. I just do my work and ignore people who are difficult.",
+      "expected_range": [
+        5,
+        25
+      ],
+      "score": 10,
+      "in_range": true,
+      "critique": "The candidate's response, 'I do not really have conflicts. I just do my work and ignore people who are difficult,' is a significant red flag in a professional context. By claiming they 'do not really have conflicts,' the candidate demonstrates a lack of self-awareness or an inability to recognize the inevitable friction that occurs in collaborative, high-stakes engineering environments. Furthermore, the strategy to 'ignore people who are difficult' is an anti-pattern that promotes silos, hinders cross-functional communication, and prevents the resolution of technical disagreements, which are essential for healthy team dynamics and project success.",
+      "suggestions": "Adopt the STAR method (Situation, Task, Action, Result) to frame past experiences. Even if you haven't had a major conflict, describe a time you had a technical disagreement (e.g., choosing between two architectural patterns) and how you used data, objective trade-off analysis, or consensus-building to resolve it. Focus on professional maturity: emphasize active listening, empathy, and the ability to prioritize the project's goals over personal friction. Research 'conflict resolution' frameworks like 'radical candor' or 'non-violent communication' to demonstrate how you handle interpersonal challenges constructively."
+    },
+    {
+      "id": "hr_2_weak_plus",
+      "category": "HR",
+      "difficulty": "Easy",
+      "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+      "answer": "In my college project, my teammate and I disagreed about which technology to use. We argued for some time, then I agreed with him to avoid more problems and we finished the project.",
+      "expected_range": [
+        25,
+        45
+      ],
+      "score": 25,
+      "in_range": true,
+      "critique": "The candidate's response is superficial and demonstrates a lack of professional conflict resolution skills. By stating, 'I agreed with him to avoid more problems,' the candidate describes conflict avoidance rather than conflict resolution. This approach is an anti-pattern in professional engineering environments, as it prioritizes short-term peace over technical correctness or project quality. The response fails to mention any objective criteria for decision-making, such as evaluating technical trade-offs, performance benchmarks, or maintainability, and provides no evidence of a structured process for reaching a consensus.",
+      "suggestions": "Adopt a structured framework for conflict resolution, such as the STAR method (Situation, Task, Action, Result). When discussing technical disagreements, focus on objective data: mention how you evaluated the trade-offs (e.g., latency, scalability, developer velocity, or long-term maintenance costs). Instead of 'avoiding problems,' describe how you facilitated a technical review, created a proof-of-concept (PoC) to test both approaches, or sought a third-party architectural review to reach a data-driven decision."
+    },
+    {
+      "id": "hr_3_average",
+      "category": "HR",
+      "difficulty": "Easy",
+      "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+      "answer": "During my final-year project, a teammate and I disagreed about whether to use MongoDB or MySQL. I felt MySQL was better because our data was relational. I suggested we list the pros and cons together and ask our guide for input. After discussing, we chose MySQL. The project went well and we learned to talk things through calmly.",
+      "expected_range": [
+        48,
+        65
+      ],
+      "score": 45,
+      "in_range": false,
+      "critique": "The candidate provides a basic, anecdotal account of a conflict, noting they 'disagreed about whether to use MongoDB or MySQL' and resolved it by 'listing the pros and cons'. While the candidate demonstrates a collaborative approach, the response is superficial. It lacks technical depth regarding the actual trade-offs between document-oriented and relational databases, such as schema flexibility, ACID compliance, join complexity, or horizontal scalability. The mention of asking a 'guide for input' suggests a reliance on external authority rather than demonstrating technical leadership or data-driven decision-making.",
+      "suggestions": "To improve, frame the conflict around specific technical requirements. Instead of just 'listing pros and cons,' explain the criteria used: e.g., 'We evaluated the need for complex joins and strict schema enforcement (MySQL) versus the requirement for rapid iteration and polymorphic data structures (MongoDB).' Discuss how you analyzed the workload (read-heavy vs. write-heavy) or data consistency requirements (CAP theorem). Demonstrating that you can evaluate architectural trade-offs objectively, rather than just 'talking things through,' will significantly elevate the answer."
+    },
+    {
+      "id": "hr_4_good",
+      "category": "HR",
+      "difficulty": "Easy",
+      "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+      "answer": "In my internship, a teammate and I disagreed about how to structure an API. He wanted one large endpoint to save time, and I was worried about maintainability. Instead of arguing, I asked him what deadline pressure he was facing, and it turned out the demo was in three days. I proposed building his simple version first and refactoring after the demo, and we wrote down the follow-up task. The demo went fine, and we refactored the following week. I learned to understand the constraint behind a position before defending mine.",
+      "expected_range": [
+        65,
+        80
+      ],
+      "score": 65,
+      "in_range": true,
+      "critique": "The candidate provides a clear, structured, and professional account of a conflict resolution scenario. They correctly identify the importance of 'understanding the constraint behind a position' rather than engaging in a purely technical debate. The approach of 'building his simple version first and refactoring after the demo' demonstrates a pragmatic understanding of technical debt versus business requirements. However, the response remains at a surface level regarding engineering process. It lacks detail on how they ensured the 'refactoring' actually occurred (e.g., creating a Jira ticket, adding it to the sprint backlog, or establishing a definition of done) and does not discuss the technical criteria used to evaluate the 'maintainability' of the API structure.",
+      "suggestions": "To elevate this answer, explicitly mention the mechanism used to track the technical debt, such as 'creating a technical debt ticket in our backlog' or 'scheduling a follow-up code review'. Additionally, briefly define the technical trade-offs you were concerned about\u2014for example, mentioning 'API contract stability', 'versioning', or 'payload size'\u2014to demonstrate that your concern for maintainability was based on specific architectural principles rather than just a preference."
+    },
+    {
+      "id": "hr_5_strong",
+      "category": "HR",
+      "difficulty": "Easy",
+      "question": "Tell me about a time you had a conflict in a team and how you handled it.",
+      "answer": "Situation: in my internship, a teammate and I disagreed on how to build a reporting API two weeks before a client demo. He wanted a single large endpoint for speed. I was concerned about maintainability and slow queries. Task: we needed an approach we both could commit to without missing the demo. Action: I asked what was driving his preference, and learned he was worried about the deadline. I proposed splitting the work: we ship his simpler version for the demo, and I would profile it afterwards. We agreed on a measurable trigger for refactoring, any query above 2 seconds, and I put the follow-up in the sprint board. Result: the demo shipped on time, profiling found 3 slow queries, and the refactor cut report time from 6 seconds to 1.5 seconds. My teammate later asked me to review his next design early. I learned that most conflicts are about different constraints, so I now ask about the constraint before arguing about the solution.",
+      "expected_range": [
+        82,
+        95
+      ],
+      "score": 82,
+      "in_range": true,
+      "critique": "The candidate provides a strong, structured response using the STAR method. They demonstrate high emotional intelligence by identifying that 'most conflicts are about different constraints' rather than just technical ego. The technical approach\u2014proposing a 'measurable trigger for refactoring' (any query above 2 seconds)\u2014is an excellent example of data-driven conflict resolution. However, the answer lacks depth regarding the technical trade-offs of the proposed solution. While they mention 'maintainability and slow queries' as concerns, they do not explain the architectural implications of a 'single large endpoint' (e.g., payload size, over-fetching, or lack of cache granularity) versus the alternative (e.g., RESTful resource separation or GraphQL).",
+      "suggestions": "To elevate this to an exceptional level, briefly articulate the technical debt incurred by the 'single large endpoint' approach, such as increased latency due to over-fetching or the difficulty of implementing granular caching. When discussing the refactor, mention specific techniques used to improve performance, such as implementing pagination, database indexing, or shifting to asynchronous processing, which would demonstrate deeper engineering maturity."
+    }
+  ]
+}

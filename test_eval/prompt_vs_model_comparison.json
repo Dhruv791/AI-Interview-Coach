@@ -1,0 +1,312 @@
+[
+  {
+    "id": "be_1_weak",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "expected_range": [
+      10,
+      30
+    ],
+    "baseline_score": 10,
+    "suggested_answer_used": "SQL (relational) databases organize data into structured tables with predefined ...",
+    "old_prompt_scores": [
+      20,
+      20,
+      20
+    ],
+    "old_prompt_min": 20,
+    "old_prompt_max": 20,
+    "old_prompt_avg": 20.0,
+    "old_prompt_in_range": true,
+    "old_critique_sample": "The response is highly superficial and factually misleading. While it correctly identifies that NoSQL is a more modern paradigm, it incorrectly characterizes NoSQL as universally 'faster' and fails to address the fundamental architectural differences. It lacks any mention of schemas, ACID compliance, scalability models (vertical vs. horizontal), or specific use cases, which are critical for a technical evaluation.",
+    "improved_prompt_scores": [
+      20,
+      25,
+      20
+    ],
+    "improved_prompt_min": 20,
+    "improved_prompt_max": 25,
+    "improved_prompt_avg": 21.7,
+    "improved_prompt_in_range": true,
+    "improved_critique_sample": "The candidate's response is critically underspecified and factually misleading. The claim that 'SQL is the old one and NoSQL is the new one' is a chronological fallacy that ignores the distinct architectural purposes of each. Furthermore, the assertion that 'NoSQL is faster so I would use it mostly' is a dangerous oversimplification. NoSQL is not universally 'faster'; performance depends entirely on the access pattern, data structure, and consistency requirements. The candidate fails to mention ACID compliance, schema rigidity, horizontal vs. vertical scaling, or the CAP theorem, which are the fundamental trade-offs in database selection."
+  },
+  {
+    "id": "be_2_weak_plus",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "expected_range": [
+      30,
+      50
+    ],
+    "baseline_score": 45,
+    "suggested_answer_used": "SQL (relational) databases organize data into structured tables with predefined ...",
+    "old_prompt_scores": [
+      55,
+      55,
+      55
+    ],
+    "old_prompt_min": 55,
+    "old_prompt_max": 55,
+    "old_prompt_avg": 55.0,
+    "old_prompt_in_range": false,
+    "old_critique_sample": "The candidate correctly identified the fundamental structural difference between SQL (tables) and NoSQL (documents) and accurately noted that NoSQL generally offers better horizontal scalability. However, the response lacks depth regarding the 'why' behind these choices. It fails to mention critical concepts such as ACID compliance, schema rigidity versus flexibility, the role of joins in relational databases, and the trade-offs defined by the CAP theorem. The explanation is overly simplistic and misses the nuance of when to apply each technology in a production environment.",
+    "improved_prompt_scores": [
+      45,
+      45,
+      45
+    ],
+    "improved_prompt_min": 45,
+    "improved_prompt_max": 45,
+    "improved_prompt_avg": 45.0,
+    "improved_prompt_in_range": true,
+    "improved_critique_sample": "The candidate provides a basic, high-level distinction between SQL and NoSQL, correctly identifying that SQL uses 'tables with rows and columns' and NoSQL uses 'documents'. However, the response is overly simplistic and misses the core engineering trade-offs. The claim that 'NoSQL is also more scalable' is an overgeneralization; while NoSQL is designed for horizontal scaling (sharding), SQL databases can also scale horizontally with modern distributed architectures. The candidate fails to mention critical concepts such as ACID compliance, the CAP theorem, consistency models, or the specific use cases for relational integrity versus schema flexibility."
+  },
+  {
+    "id": "be_3_average",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "expected_range": [
+      50,
+      68
+    ],
+    "baseline_score": 90,
+    "suggested_answer_used": "SQL (relational) databases organize data into structured tables with predefined ...",
+    "old_prompt_scores": [
+      85,
+      85,
+      85
+    ],
+    "old_prompt_min": 85,
+    "old_prompt_max": 85,
+    "old_prompt_avg": 85.0,
+    "old_prompt_in_range": false,
+    "old_critique_sample": "The candidate provided a concise and accurate summary of the core differences between SQL and NoSQL. They correctly identified the key trade-offs: schema rigidity vs. flexibility, ACID compliance vs. horizontal scalability, and appropriate use cases. The response is technically sound and hits the most important high-level points. However, it lacks depth regarding the theoretical underpinnings (such as the CAP theorem) and does not elaborate on the different types of NoSQL databases (document, key-value, wide-column) beyond just naming two examples.",
+    "improved_prompt_scores": [
+      62,
+      62,
+      65
+    ],
+    "improved_prompt_min": 62,
+    "improved_prompt_max": 65,
+    "improved_prompt_avg": 63.0,
+    "improved_prompt_in_range": true,
+    "improved_critique_sample": "The candidate provides a competent, high-level overview, correctly identifying that SQL databases use 'fixed schema, tables, and joins' with 'ACID transactions' while NoSQL offers 'flexible schemas' and 'horizontal' scaling. However, the response remains at a textbook level. It fails to address the underlying architectural trade-offs defined by the CAP theorem (Consistency, Availability, Partition Tolerance) or the PACELC theorem. The candidate mentions 'large volumes of changing data' as a driver for NoSQL but misses the nuance of data modeling\u2014specifically, how SQL excels at complex relational integrity versus NoSQL's optimization for denormalized, read-heavy, or write-heavy workloads."
+  },
+  {
+    "id": "be_4_good",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "expected_range": [
+      68,
+      82
+    ],
+    "baseline_score": 93,
+    "suggested_answer_used": "SQL (relational) databases organize data into structured tables with predefined ...",
+    "old_prompt_scores": [
+      95,
+      92,
+      95
+    ],
+    "old_prompt_min": 92,
+    "old_prompt_max": 95,
+    "old_prompt_avg": 94.0,
+    "old_prompt_in_range": false,
+    "old_critique_sample": "The candidate provided an excellent, high-level summary that accurately distinguishes between SQL and NoSQL. They correctly identified the trade-offs regarding schema, ACID compliance, and horizontal scaling. The inclusion of the nuance regarding PostgreSQL's JSONB capabilities demonstrates a strong, practical understanding of modern database systems, showing that the candidate understands that the lines between these categories are blurring.",
+    "improved_prompt_scores": [
+      78,
+      78,
+      78
+    ],
+    "improved_prompt_min": 78,
+    "improved_prompt_max": 78,
+    "improved_prompt_avg": 78.0,
+    "improved_prompt_in_range": true,
+    "improved_critique_sample": "The candidate provides a strong, accurate overview of the fundamental differences between SQL and NoSQL, correctly identifying that SQL systems 'enforce a schema, support joins and full ACID transactions' while NoSQL systems 'trade some consistency or query flexibility for easier horizontal scaling'. The inclusion of the observation that 'PostgreSQL also supports JSONB' is a sophisticated touch that demonstrates an understanding of modern database convergence. However, the answer lacks depth regarding the CAP theorem trade-offs (Consistency, Availability, Partition Tolerance) beyond a brief mention of scaling. It also misses the operational reality of 'polyglot persistence'\u2014the architectural pattern of using multiple database types within a single application\u2014and the specific performance implications of schema-on-write versus schema-on-read."
+  },
+  {
+    "id": "be_5_strong",
+    "category": "Backend",
+    "difficulty": "Medium",
+    "expected_range": [
+      82,
+      95
+    ],
+    "baseline_score": 96,
+    "suggested_answer_used": "SQL (relational) databases organize data into structured tables with predefined ...",
+    "old_prompt_scores": [
+      95,
+      95,
+      95
+    ],
+    "old_prompt_min": 95,
+    "old_prompt_max": 95,
+    "old_prompt_avg": 95.0,
+    "old_prompt_in_range": true,
+    "old_critique_sample": "The candidate provided an excellent, high-level response that demonstrates both theoretical knowledge and practical engineering experience. They correctly identified the core trade-offs (ACID vs. CAP, schema rigidity vs. flexibility) and provided concrete examples of when to use specific database types. The inclusion of a real-world example using PostgreSQL's JSONB capabilities shows a sophisticated understanding of modern database hybrid approaches, avoiding the 'NoSQL vs. SQL' binary trap. The response is accurate, concise, and technically sound.",
+    "improved_prompt_scores": [
+      90,
+      90,
+      90
+    ],
+    "improved_prompt_min": 90,
+    "improved_prompt_max": 90,
+    "improved_prompt_avg": 90.0,
+    "improved_prompt_in_range": true,
+    "improved_critique_sample": "The candidate demonstrates a high level of architectural maturity by prioritizing 'access patterns and consistency needs' over rigid labels. They correctly identify the operational trade-offs of SQL (ACID, relational integrity) and NoSQL (horizontal scale, write throughput). The candidate's practical experience is evident in their mention of 'JSONB' as a bridge for semi-structured data within a relational engine, which is a sophisticated way to avoid unnecessary polyglot persistence. They accurately link NoSQL choices to specific use cases like 'Redis for low-latency caching' and 'Cassandra for very high write throughput'. The answer is strong, though it could be further elevated by explicitly discussing the 'PACELC' theorem, which extends CAP by addressing the latency-consistency trade-off even when the system is running normally."
+  },
+  {
+    "id": "hr_1_weak",
+    "category": "HR",
+    "difficulty": "Easy",
+    "expected_range": [
+      5,
+      25
+    ],
+    "baseline_score": 5,
+    "suggested_answer_used": "A strong behavioural response uses the STAR method (Situation, Task, Action, Res...",
+    "old_prompt_scores": [
+      10,
+      10,
+      10
+    ],
+    "old_prompt_min": 10,
+    "old_prompt_max": 10,
+    "old_prompt_avg": 10.0,
+    "old_prompt_in_range": true,
+    "old_critique_sample": "The candidate failed to address the core of the behavioral question. By claiming they 'do not have conflicts' and 'ignore people,' they demonstrate a lack of emotional intelligence, poor communication skills, and an inability to collaborate in a professional environment. This response suggests a potential risk to team cohesion and project success, as conflict is an inevitable part of technical work.",
+    "improved_prompt_scores": [
+      15,
+      15,
+      15
+    ],
+    "improved_prompt_min": 15,
+    "improved_prompt_max": 15,
+    "improved_prompt_avg": 15.0,
+    "improved_prompt_in_range": true,
+    "improved_critique_sample": "The candidate's response is fundamentally flawed as it avoids the core of the question. By stating 'I do not really have conflicts' and 'I just do my work and ignore people who are difficult,' the candidate demonstrates a lack of self-awareness and a reliance on conflict avoidance, which is a significant professional anti-pattern. The response fails to provide any STAR elements (Situation, Task, Action, Result), offering instead a dismissive attitude toward interpersonal collaboration and team dynamics."
+  },
+  {
+    "id": "hr_2_weak_plus",
+    "category": "HR",
+    "difficulty": "Easy",
+    "expected_range": [
+      25,
+      45
+    ],
+    "baseline_score": 40,
+    "suggested_answer_used": "A strong behavioural response uses the STAR method (Situation, Task, Action, Res...",
+    "old_prompt_scores": [
+      30,
+      30,
+      30
+    ],
+    "old_prompt_min": 30,
+    "old_prompt_max": 30,
+    "old_prompt_avg": 30.0,
+    "old_prompt_in_range": true,
+    "old_critique_sample": "The response is significantly underdeveloped and fails to meet the requirements of a professional behavioral interview. While it identifies a conflict, it lacks the necessary depth, structure (STAR method), and professional maturity. The candidate describes 'giving in' to avoid conflict rather than resolving it through objective analysis or collaboration, which is a red flag in a professional setting. There is no mention of technical trade-offs, communication strategies, or a positive team outcome.",
+    "improved_prompt_scores": [
+      40,
+      40,
+      40
+    ],
+    "improved_prompt_min": 40,
+    "improved_prompt_max": 40,
+    "improved_prompt_avg": 40.0,
+    "improved_prompt_in_range": true,
+    "improved_critique_sample": "The response is underdeveloped and lacks the necessary depth for a professional assessment. While the candidate identifies a 'college project' as the situation, the narrative is missing the Task, Action, and Result components. The claim 'I agreed with him to avoid more problems' indicates a passive, conflict-avoidant approach rather than a collaborative resolution. By prioritizing the avoidance of 'more problems' over evaluating the technical merits of the disagreement, the candidate fails to demonstrate critical thinking, active listening, or professional negotiation skills."
+  },
+  {
+    "id": "hr_3_average",
+    "category": "HR",
+    "difficulty": "Easy",
+    "expected_range": [
+      48,
+      65
+    ],
+    "baseline_score": 70,
+    "suggested_answer_used": "A strong behavioural response uses the STAR method (Situation, Task, Action, Res...",
+    "old_prompt_scores": [
+      65,
+      65,
+      65
+    ],
+    "old_prompt_min": 65,
+    "old_prompt_max": 65,
+    "old_prompt_avg": 65.0,
+    "old_prompt_in_range": true,
+    "old_critique_sample": "The candidate successfully utilized the STAR method, providing a clear situation, task, action, and result. The response is professional and avoids blaming the teammate. However, it lacks depth. The technical justification for the choice (relational data) is sound, but the 'Action' phase is too brief. It misses the opportunity to demonstrate advanced conflict resolution skills, such as active listening, objective trade-off analysis, or how the candidate managed the emotional aspect of the disagreement.",
+    "improved_prompt_scores": [
+      62,
+      62,
+      62
+    ],
+    "improved_prompt_min": 62,
+    "improved_prompt_max": 62,
+    "improved_prompt_avg": 62.0,
+    "improved_prompt_in_range": true,
+    "improved_critique_sample": "The candidate provides a clear, concise narrative that follows the basic STAR structure, which is a strength. The 'Situation' and 'Task' are well-defined: 'a teammate and I disagreed about whether to use MongoDB or MySQL.' The 'Action' shows a constructive approach by suggesting they 'list the pros and cons together' and 'ask our guide for input.' However, the response is underdeveloped. It lacks depth regarding the 'Action' phase\u2014specifically, how the candidate practiced active listening to understand the teammate's preference for MongoDB. The 'Result' is vague, stating 'the project went well,' which lacks the impact or measurable outcome expected at a higher level. The reflection 'we learned to talk things through calmly' is positive but generic."
+  },
+  {
+    "id": "hr_4_good",
+    "category": "HR",
+    "difficulty": "Easy",
+    "expected_range": [
+      65,
+      80
+    ],
+    "baseline_score": 90,
+    "suggested_answer_used": "A strong behavioural response uses the STAR method (Situation, Task, Action, Res...",
+    "old_prompt_scores": [
+      90,
+      85,
+      85
+    ],
+    "old_prompt_min": 85,
+    "old_prompt_max": 90,
+    "old_prompt_avg": 86.7,
+    "old_prompt_in_range": false,
+    "old_critique_sample": "The candidate provided an excellent, concise response using the STAR method effectively. They successfully identified the underlying constraint (the demo deadline) and proposed a pragmatic, data-driven compromise. The reflection at the end demonstrates strong interpersonal growth. The only minor area for improvement is the depth of the technical justification; while 'maintainability' was mentioned, briefly touching on specific trade-offs (e.g., technical debt vs. speed to market) would have added more technical weight.",
+    "improved_prompt_scores": [
+      82,
+      82,
+      82
+    ],
+    "improved_prompt_min": 82,
+    "improved_prompt_max": 82,
+    "improved_prompt_avg": 82.0,
+    "improved_prompt_in_range": false,
+    "improved_critique_sample": "The candidate provides a strong, well-structured STAR response. The Situation and Task are clearly defined: 'teammate and I disagreed about how to structure an API' due to 'deadline pressure'. The Action is highly effective, specifically the pivot from technical debate to active listening: 'I asked him what deadline pressure he was facing'. This demonstrates high emotional intelligence by identifying the root constraint rather than focusing on the technical disagreement. The Result is clear and professional, showing both the immediate success of the demo and the follow-up: 'we refactored the following week'. The reflection at the end shows maturity and growth."
+  },
+  {
+    "id": "hr_5_strong",
+    "category": "HR",
+    "difficulty": "Easy",
+    "expected_range": [
+      82,
+      95
+    ],
+    "baseline_score": 95,
+    "suggested_answer_used": "A strong behavioural response uses the STAR method (Situation, Task, Action, Res...",
+    "old_prompt_scores": [
+      95,
+      95,
+      95
+    ],
+    "old_prompt_min": 95,
+    "old_prompt_max": 95,
+    "old_prompt_avg": 95.0,
+    "old_prompt_in_range": true,
+    "old_critique_sample": "The candidate provided an excellent response using the STAR method. They clearly defined the technical conflict, demonstrated active listening by identifying the teammate's underlying constraint (the deadline), and proposed a pragmatic, data-driven compromise. The result was quantifiable, and the reflection showed genuine professional growth. The response is concise, professional, and directly addresses the prompt's requirements.",
+    "improved_prompt_scores": [
+      90,
+      90,
+      90
+    ],
+    "improved_prompt_min": 90,
+    "improved_prompt_max": 90,
+    "improved_prompt_avg": 90.0,
+    "improved_prompt_in_range": true,
+    "improved_critique_sample": "The candidate provides an exceptional STAR response. The situation is clearly defined with specific technical constraints ('single large endpoint' vs 'maintainability and slow queries'). The action phase is particularly strong, as the candidate moved beyond the technical debate to uncover the root cause ('I asked what was driving his preference, and learned he was worried about the deadline'). By establishing a 'measurable trigger for refactoring' and documenting it in the 'sprint board', the candidate demonstrated professional maturity and objective decision-making. The result is quantified ('cut report time from 6 seconds to 1.5 seconds') and includes a clear reflection on personal growth ('I now ask about the constraint before arguing about the solution')."
+  }
+]
